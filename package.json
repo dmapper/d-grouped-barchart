@@ -1,0 +1,25 @@
+{
+  "name": "d-grouped-barchart",
+  "version": "0.0.1",
+  "description": "Derby grouped bar chart component using d3 and d3-tip.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dmapper/d-grouped-barchart.git"
+  },
+  "keywords": [
+    "derby",
+    "component",
+    "d3"
+  ],
+  "author": "Osman Mazinov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dmapper/d-grouped-barchart/issues"
+  },
+  "homepage": "https://github.com/dmapper/d-grouped-barchart",
+  "dependencies": {
+    "d3": "^3.4.4"
+  },
+  "devDependencies": {}
+}
