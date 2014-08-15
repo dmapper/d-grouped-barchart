@@ -9,12 +9,17 @@ BarChart.prototype.view = __dirname;
 BarChart.prototype.init = function() {
   var model = this.model;
   model.setNull("data", []);
-  model.setNull("width", 200);
-  model.setNull("height", 100);
+  model.setNull("width", 400);
+  model.setNull("height", 200);
   model.setNull("colors", ['#4f81bd', '#c0504d']);
   model.setNull("groupByKey", "");
   model.setNull("keys", []);
+  model.setNull("axisHeaders", ["Groups", "Value"]);
+  model.setNull("legendConfig", []);
+  model.setNull("margins", {top: 30, right: 40, bottom: 55, left: 40});
 
+  this.axisHeaders = model.get("axisHeaders");
+  this.margins = model.get("margins");
   this.yScale = d3.scale.linear()
     .range([0, model.get("height")]);
   this.xScale = d3.scale.ordinal()
@@ -74,7 +79,7 @@ BarChart.prototype.transform = function() {
 
   // hack
   if(this.keys.indexOf('properties') > -1)
-    this.keys.splice(this.keys.indexOf('properties'), 1)
+    this.keys.splice(this.keys.indexOf('properties'), 1);
 
   // prepare data
   data.forEach(function(d) {
@@ -125,22 +130,25 @@ BarChart.prototype.draw = function() {
   if (!data[0])
     data = testData;
   var groupByKey = model.get("groupByKey") || "role";
-
   var height = model.get("height");
-  var barSel = d3.select(this.chart).selectAll("rect.bar")
-    .data(data)
-    .enter()
-    .append("g").attr("class", "g")
-    .attr("transform", function (d) {
-      return "translate(" + that.x0(d[groupByKey]) + ",0)";
-    });
+  var width = model.get("width");
+  var margins = model.get("margins");
 
-  // tip: move toFixed2 to BarChart.prototype.toFixed2?
   var tip = d3.tip()
     .attr("class", "d3-tip")
     .offset([-10, 0])
     .html(function (d) {
       return "<strong>Value:</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span>";
+    });
+
+  canvas = helper.createCanvas(this.chart, width, height, margins, tip);
+
+  var barSel = canvas.selectAll("rect.bar")
+    .data(data)
+    .enter()
+    .append("g").attr("class", "g")
+    .attr("transform", function (d) {
+      return "translate(" + that.x0(d[groupByKey]) + ",0)";
     });
 
   barSel.selectAll("rect")
@@ -172,5 +180,8 @@ BarChart.prototype.draw = function() {
     })
     .on("mouseover", tip.show)
     .on("mouseout", tip.hide);
+
+  helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], "");
+  helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1], "");
 
 };
