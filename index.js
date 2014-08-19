@@ -9,8 +9,6 @@ BarChart.prototype.view = __dirname;
 BarChart.prototype.init = function() {
   var model = this.model;
   model.setNull("data", []);
-  model.setNull("width", 400);
-  model.setNull("height", 200);
   model.setNull("colors", ['#4f81bd', '#c0504d']);
   model.setNull("groupByKey", "");
   model.setNull("keys", []);
@@ -20,32 +18,14 @@ BarChart.prototype.init = function() {
 
   this.axisHeaders = model.get("axisHeaders");
   this.margins = model.get("margins");
-  this.yScale = d3.scale.linear()
-    .range([0, model.get("height")]);
-  this.xScale = d3.scale.ordinal()
-    .rangeBands([0, model.get("width")], 0.1);
-
-  // scales: ranges
-  this.x0 = d3.scale.ordinal().rangeRoundBands([0, model.get("width")], .1);
-  this.x1 = d3.scale.ordinal();
-  this.y = d3.scale.linear().range([model.get("height"), 0]);
-  // color func
-  this.color = d3.scale.ordinal().range(model.get("colors"));
-  // axis
-  this.xAxis = d3.svg.axis().scale(this.x0).orient("bottom");
-  this.yAxis = d3.svg.axis().scale(this.y).orient("left");
 
   this.setKeys();
   this.setLegend();
-  this.transform();
 };
 
 BarChart.prototype.create = function() {
   var model = this.model;
-  var that = this;
-
-  //that.transform();
-  that.draw();
+  this.draw();
 };
 
 BarChart.prototype.setKeys = function() {
@@ -87,20 +67,29 @@ BarChart.prototype.setLegend = function() {
   }).call(this);
 };
 
-BarChart.prototype.transform = function() {
+BarChart.prototype.setScales = function(width, height) {
   var model = this.model;
   var that = this;
+  var groupByKey = model.get("groupByKey") || "role";
+  var maxVal, minVal;
   var data = model.get("data");
   if(!data[0])
     data = testData;
-  var height = model.get("height");
-  var groupByKey = model.get("groupByKey") || "role";
-  var maxVal, minVal;
 
-  // hack
-  if(this.keys.indexOf('properties') > -1)
-    this.keys.splice(this.keys.indexOf('properties'), 1);
-
+  this.yScale = d3.scale.linear()
+    .range([0, height]);
+  this.xScale = d3.scale.ordinal()
+    .rangeBands([0, width], 0.1);
+  // scales: ranges
+  this.x0 = d3.scale.ordinal().rangeRoundBands([0, width], .1);
+  this.x1 = d3.scale.ordinal();
+  this.y = d3.scale.linear().range([height, 0]);
+  // color func
+  this.color = d3.scale.ordinal().range(model.get("colors"));
+  // axis
+  this.xAxis = d3.svg.axis().scale(this.x0).orient("bottom");
+  this.yAxis = d3.svg.axis().scale(this.y).orient("left");
+  console.log(this.keys);
   // prepare data
   data.forEach(function(d) {
     d.properties = (that.keys).map(function(name) { return {name: name, value: +d[name]}; });
@@ -124,7 +113,7 @@ BarChart.prototype.transform = function() {
   // Get the x axis position (handle negative values)
   this.xAxisTransform = height
   if(minVal < 0 < maxVal)
-    this.xAxisTransform =  height * (maxVal / (maxVal - minVal))
+    this.xAxisTransform =  height * (maxVal / (maxVal - minVal));
 
   this.xScale.domain(d3.range(data.length));
   // this could be implemented as extent for a relative scale
@@ -139,7 +128,7 @@ BarChart.prototype.transform = function() {
 
   this.minVal = minVal;
   this.maxVal = maxVal;
-};
+}
 
 BarChart.prototype.draw = function() {
   require('./d3.tip.min.js');
@@ -150,11 +139,15 @@ BarChart.prototype.draw = function() {
   if (!data[0])
     data = testData;
   var groupByKey = model.get("groupByKey") || "role";
-  var height = parseInt(model.get("height"));
-  var width = parseInt(model.get("width"));
   var margins = model.get("margins");
+  var width = parseInt(model.get("width")) || (this.chart).offsetWidth || 800;
+  var height = parseInt(model.get("height")) || 300;
+  width = width - margins.left - margins.right;
+  height = height - margins.top - margins.bottom;
   var legendConfig = this.legendConfig;
   var legend;
+
+  this.setScales(width, height);
 
   var tip = d3.tip()
     .attr("class", "d3-tip")
@@ -163,7 +156,7 @@ BarChart.prototype.draw = function() {
       return "<strong>Value:</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span>";
     });
 
-  canvas = helper.createCanvas(this.chart, width, height, margins, tip);
+  var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
 
   var barSel = canvas.selectAll("rect.bar")
     .data(data)
