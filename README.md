@@ -37,5 +37,7 @@ view(name='d-grouped-barchart', data='{{_page.data}}', groupByKey='role', width=
 ```
 
 ## Gallery
+![Alt text](/screenshots/with-tooltip.png?raw=true "Grouped bar chart with tooltip")
+![Alt text](/screenshots/with-tooltip-single.png?raw=true "Grouped by single value")
 ![Alt text](/screenshots/with-legend.png?raw=true "Grouped bar chart with legend")
 ![Alt text](/screenshots/with-negative-single.png?raw=true "Grouped by single value")
