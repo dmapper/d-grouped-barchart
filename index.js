@@ -15,7 +15,7 @@ BarChart.prototype.init = function() {
   model.setNull("groupByKey", "");
   model.setNull("keys", []);
   model.setNull("axisHeaders", ["Groups", "Value"]);
-  model.setNull("legendConfig", []);
+  //model.setNull("legendConfig", []);
   model.setNull("margins", {top: 30, right: 40, bottom: 55, left: 40});
 
   this.axisHeaders = model.get("axisHeaders");
@@ -36,6 +36,7 @@ BarChart.prototype.init = function() {
   this.yAxis = d3.svg.axis().scale(this.y).orient("left");
 
   this.setKeys();
+  this.setLegend();
   this.transform();
 };
 
@@ -53,7 +54,6 @@ BarChart.prototype.setKeys = function() {
   var data = model.get("data");
   if(!data[0])
     data = testData;
-
   var key;
   this.keys = (function() {
     var _results;
@@ -62,6 +62,26 @@ BarChart.prototype.setKeys = function() {
       if (key !== groupByKey) {
         _results.push(key);
       }
+    }
+    return _results;
+  }).call(this);
+};
+
+BarChart.prototype.setLegend = function() {
+  var model = this.model;
+  var colors = model.get("colors");
+  var index, key;
+  this.legendConfig = (function() {
+    var _i, _len, _ref, _results;
+    _ref = this.keys;
+    _results = [];
+    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+      key = _ref[index];
+      _results.push({
+        text: key,
+        color: colors[index % colors.length],
+        type: 'rect'
+      });
     }
     return _results;
   }).call(this);
@@ -130,9 +150,11 @@ BarChart.prototype.draw = function() {
   if (!data[0])
     data = testData;
   var groupByKey = model.get("groupByKey") || "role";
-  var height = model.get("height");
-  var width = model.get("width");
+  var height = parseInt(model.get("height"));
+  var width = parseInt(model.get("width"));
   var margins = model.get("margins");
+  var legendConfig = this.legendConfig;
+  var legend;
 
   var tip = d3.tip()
     .attr("class", "d3-tip")
@@ -183,5 +205,36 @@ BarChart.prototype.draw = function() {
 
   helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], "");
   helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1], "");
+
+  legend = canvas.append("g")
+    .attr("class", "legend")
+    .attr("height", 100)
+    .attr("width", 100)
+    .attr("transform", "translate(-5," + (height+20) + ")");
+
+  legend.selectAll("rect")
+      .data(legendConfig)
+    .enter().append("rect")
+      .attr("x", width - 65)
+      .attr("y", function(d, i) {
+        return i * 20;
+      })
+      .attr("width", 10)
+      .attr("height", 10)
+      .style("fill", function(d, i) {
+        return legendConfig[i].color;
+      });
+
+  legend.selectAll("text")
+      .data(legendConfig)
+    .enter()
+      .append("text")
+      .attr("x", width - 52)
+      .attr("y", function(d, i) {
+        return i * 20 + 9;
+      })
+      .text(function(d, i) {
+        return legendConfig[i].text;
+      });
 
 };
