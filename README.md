@@ -7,6 +7,10 @@ app.component require('d-grouped-barchart')
 ```
 
 ```coffee
+@import '/node_modules/d-grouped-barchart/index.styl'
+```
+
+```coffee
 data = [
   {
     "role": "Vet",
