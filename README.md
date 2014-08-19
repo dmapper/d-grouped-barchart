@@ -1,5 +1,6 @@
 d-grouped-barchart
 ==================
+Derby grouped bar chart component using d3 and d3-tip.
 
 ## Usage
 ```coffee
@@ -31,7 +32,10 @@ data = [
 ]
 ```
 
-
 ```jade
 view(name='d-grouped-barchart', data='{{_page.data}}', groupByKey='role', width='500', height='200')
 ```
+
+## Gallery
+![Alt text](/screenshots/with-legend.png?raw=true "Grouped bar chart with legend")
+![Alt text](/screenshots/with-negative-single.png?raw=true "Grouped by single value")
