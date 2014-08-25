@@ -3,14 +3,22 @@ d-grouped-barchart
 Derby grouped bar chart component using d3 and d3-tip.
 
 ## Usage
+
+#### Install
+
+```
+npm install d-grouped-barchart
+```
+
+#### Add component into derby application
 ```coffee
 app.component require('d-grouped-barchart')
 ```
-
-```coffee
+#### Styles
+```
 @import '/node_modules/d-grouped-barchart/index.styl'
 ```
-
+#### Data format
 ```coffee
 data = [
   {
@@ -31,7 +39,7 @@ data = [
   ...
 ]
 ```
-
+#### Within template
 ```jade
 view(name='d-grouped-barchart', data='{{_page.data}}', groupByKey='role', width='500', height='200')
 ```
