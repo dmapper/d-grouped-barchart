@@ -40,3 +40,15 @@ svg {
   top: 100%;
   left: 0;
 }
+
+.fullscreen {
+  position: fixed !important;
+  z-index: 20;
+  background: #fff;
+  left: 0;
+  top: 0;
+  width: 100% !important;
+  height: 100%;
+}
+
+

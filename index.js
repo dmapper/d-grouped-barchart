@@ -23,6 +23,10 @@ BarChart.prototype.init = function() {
   this.setLegend();
 };
 
+BarChart.prototype.empty = function() {
+  d3.select(this.chart).select("svg").remove();
+};
+
 BarChart.prototype.create = function() {
   var model = this.model;
   this.draw();
@@ -132,6 +136,7 @@ BarChart.prototype.setScales = function(width, height) {
 
 BarChart.prototype.draw = function() {
   require('./d3.tip.min.js');
+  require('./jquery.min.js');
 
   var that = this;
   var model = this.model;
@@ -157,6 +162,10 @@ BarChart.prototype.draw = function() {
     });
 
   var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
+
+  canvas.append("svg:rect").attr("width", width).attr("height", height).attr("fill", "rgba(250, 250, 255, 0.6)").attr("cursor", "pointer").attr("class", "plot");
+
+  var clip = canvas.append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", width).attr("height", height);
 
   var barSel = canvas.selectAll("rect.bar")
     .data(data)
@@ -194,7 +203,10 @@ BarChart.prototype.draw = function() {
       return that.color(d.name);
     })
     .on("mouseover", tip.show)
-    .on("mouseout", tip.hide);
+    .on("mouseout", tip.hide)
+    .append("svg:title").text(function(d) {
+      return helper.toFixed2(d.value);
+    });
 
   helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], "");
   helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1], "");
@@ -229,5 +241,23 @@ BarChart.prototype.draw = function() {
       .text(function(d, i) {
         return legendConfig[i].text;
       });
+
+//  d3.select(window).on("resize", resize);
+
+  canvas.on("dblclick", function() {
+    var $parent = $(that.chart).parent();
+    that.empty();
+    if ($parent.hasClass('fullscreen')) {
+      $parent.removeClass('fullscreen');
+    } else {
+      $parent.addClass('fullscreen');
+    }
+    // update width
+    width = $(that.chart).width();
+    width = width - that.margins.left - that.margins.right;
+    // updage scales
+    that.setScales(width, height);
+    that.draw();
+  });
 
 };
