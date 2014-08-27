@@ -272,7 +272,8 @@ BarChart.prototype.draw = function() {
   };
 
   canvas.on("dblclick", toggle);
-  // Coming up feature - chart title
-  d3.select(".-header").on("dblclick", toggle);
+  // Coming up feature - chart title and subtitle
+  d3.select(this.header).on("dblclick", toggle);
+  d3.select(this.subheader).on("dblclick", toggle);
 
 };
