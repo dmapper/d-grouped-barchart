@@ -163,9 +163,20 @@ BarChart.prototype.draw = function() {
 
   var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
 
-  canvas.append("svg:rect").attr("width", width).attr("height", height).attr("fill", "rgba(250, 250, 255, 0.6)").attr("cursor", "pointer").attr("class", "plot");
+  canvas.append("svg:rect")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("fill", "rgba(250, 250, 255, 0.6)")
+    .attr("cursor", "pointer")
+    .attr("class", "plot");
 
-  var clip = canvas.append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", width).attr("height", height);
+  var clip = canvas.append("svg:clipPath")
+    .attr("class", "clip")
+    .append("svg:rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width)
+    .attr("height", height);
 
   var barSel = canvas.selectAll("rect.bar")
     .data(data)
@@ -244,7 +255,7 @@ BarChart.prototype.draw = function() {
 
 //  d3.select(window).on("resize", resize);
 
-  canvas.on("dblclick", function() {
+  var toggle = function() {
     var $parent = $(that.chart).parent();
     that.empty();
     if ($parent.hasClass('fullscreen')) {
@@ -258,6 +269,10 @@ BarChart.prototype.draw = function() {
     // updage scales
     that.setScales(width, height);
     that.draw();
-  });
+  };
+
+  canvas.on("dblclick", toggle);
+  // Coming up feature - chart title
+  d3.select(".-header").on("dblclick", toggle);
 
 };
