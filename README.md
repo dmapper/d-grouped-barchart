@@ -2,6 +2,14 @@ d-grouped-barchart
 ==================
 Derby grouped bar chart component using d3 and d3-tip.
 
+## Features
+* Grouping key as a setting
+* Negative values
+* Legend based on the grouping key 
+* Title and subtitles parameters
+* Fullscreen mode on double click
+* Legend and colors customization
+
 ## Usage
 
 #### Install
