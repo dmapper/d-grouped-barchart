@@ -25,6 +25,7 @@ BarChart.prototype.init = function() {
 
 BarChart.prototype.empty = function() {
   d3.select(this.chart).select("svg").remove();
+  d3.selectAll(".d3-tip").remove();
 };
 
 BarChart.prototype.create = function() {
