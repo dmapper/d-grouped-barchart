@@ -51,6 +51,11 @@ data = [
 ```jade
 view(name='d-grouped-barchart', data='{{_page.data}}', groupByKey='role', width='500', height='200')
 ```
+#### Additional parameters to the view
+* colors - array, defines color of each bar in group, e.g. ['#4f81bd', '#c0504d']
+* axisHeaders - array, defines x and y axis header respectively, e.g. ["Groups", "Value"]
+* header - string, sets a text on top of the chart 
+* subheader - string, defines a text below the header 
 
 ## Gallery
 ![Alt text](/screenshots/with-tooltip.png?raw=true "Grouped bar chart with tooltip")
