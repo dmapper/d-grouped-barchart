@@ -19,7 +19,7 @@ drawVerticalAxis = function(canvas, component, title, id) {
 };
 
 drawHorizontalAxis = function(canvas, component, width, height, title, id) {
-  return canvas.append("g").attr("id", id != null ? id : "").attr("class", "_x _axis").attr("transform", "translate(0," + height + ")").call(component).append("text").attr("class", "_x _title").attr("x", width).attr("y", 15).attr("dy", "0.5em").style("text-anchor", "start").text(title);
+  return canvas.append("g").attr("id", id != null ? id : "").attr("class", "_x _axis").attr("transform", "translate(0," + height + ")").call(component).append("text").attr("class", "_x _title").attr("x", width/2).attr("y", 15).attr("dy", "2em").style("text-anchor", "start").text(title);
 };
 
 toFixed2 = function(x) {
