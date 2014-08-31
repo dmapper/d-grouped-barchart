@@ -78,8 +78,9 @@ BarChart.prototype.setScales = function(width, height) {
   var groupByKey = model.get("groupByKey") || "role";
   var maxVal, minVal;
   var data = model.get("data");
-  if(!data[0])
+  if(!data[0]) {
     data = testData;
+  }
 
   this.yScale = d3.scale.linear()
     .range([0, height]);
@@ -117,8 +118,9 @@ BarChart.prototype.setScales = function(width, height) {
 
   // Get the x axis position (handle negative values)
   this.xAxisTransform = height
-  if(minVal < 0 < maxVal)
+  if(minVal < 0 && 0 < maxVal) {
     this.xAxisTransform =  height * (maxVal / (maxVal - minVal));
+  }
 
   this.xScale.domain(d3.range(data.length));
   // this could be implemented as extent for a relative scale
@@ -142,8 +144,9 @@ BarChart.prototype.draw = function() {
   var that = this;
   var model = this.model;
   var data = model.get("data");
-  if (!data[0])
+  if (!data[0]) {
     data = testData;
+  }
   var groupByKey = model.get("groupByKey") || "role";
   var margins = model.get("margins");
   var width = parseInt(model.get("width")) || (this.chart).offsetWidth || 800;
