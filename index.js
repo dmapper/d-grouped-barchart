@@ -29,7 +29,17 @@ BarChart.prototype.empty = function() {
 };
 
 BarChart.prototype.create = function() {
-  var model = this.model;
+
+//next up feature
+//  var model = this.model;
+//  var that = this;
+//  model.on("all", "data**", function() {
+//    console.log("Inside data change")
+//    that.empty();
+//    that.setScales();
+//    that.draw();
+//  });
+
   this.draw();
 };
 
@@ -76,6 +86,7 @@ BarChart.prototype.setScales = function(width, height) {
   var model = this.model;
   var that = this;
   var groupByKey = model.get("groupByKey") || "role";
+  var yStep = model.get("yStep")|0;
   var maxVal, minVal;
   var data = model.get("data");
   if(!data[0]) {
@@ -94,7 +105,8 @@ BarChart.prototype.setScales = function(width, height) {
   this.color = d3.scale.ordinal().range(model.get("colors"));
   // axis
   this.xAxis = d3.svg.axis().scale(this.x0).orient("bottom");
-  this.yAxis = d3.svg.axis().scale(this.y).orient("left");
+  this.yAxis = d3.svg.axis().scale(this.y).orient("left").tickFormat(d3.format("d"));
+
   console.log(this.keys);
   // prepare data
   data.forEach(function(d) {
@@ -132,6 +144,10 @@ BarChart.prototype.setScales = function(width, height) {
   }));
   this.x1.domain(that.keys).rangeRoundBands([0, this.x0.rangeBand()]);
   this.y.domain([minVal, maxVal]);
+
+  if(yStep) {
+    this.yAxis.tickValues(d3.range(0, maxVal+0.1, yStep))
+  }
 
   this.minVal = minVal;
   this.maxVal = maxVal;
