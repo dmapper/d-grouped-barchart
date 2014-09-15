@@ -128,6 +128,12 @@ BarChart.prototype.setScales = function(width, height) {
     });
   });
 
+  var total = d3.sum(data, function(d) {
+    return d3.sum(d.properties, function(d) {
+      return d.value;
+    });
+  });
+
   // Get the x axis position (handle negative values)
   this.xAxisTransform = height
   if(minVal < 0 && 0 < maxVal) {
@@ -151,6 +157,7 @@ BarChart.prototype.setScales = function(width, height) {
 
   this.minVal = minVal;
   this.maxVal = maxVal;
+  this.total = total;
 }
 
 BarChart.prototype.draw = function() {
@@ -170,6 +177,10 @@ BarChart.prototype.draw = function() {
   width = width - margins.left - margins.right;
   height = height - margins.top - margins.bottom;
   var legendConfig = this.legendConfig;
+  var tipConfig = model.get('tipConfig');
+  if (!tipConfig) {
+    tipConfig = [ {name: 'Value', percentage: false} ];
+  }
   var legend;
 
   this.setScales(width, height);
@@ -178,7 +189,14 @@ BarChart.prototype.draw = function() {
     .attr("class", "d3-tip")
     .offset([-10, 0])
     .html(function (d) {
-      return "<strong>Value:</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span>";
+      var result = "";
+      for(var i = 0; i < tipConfig.length; i++)
+        if (tipConfig[i].percentage) {
+          result += "<strong>" + tipConfig[i].name + ":</strong> <span style='color:red'>" + (helper.toFixed2(d.value*100/that.total)) + "%</span><br/>";
+        } else {
+          result += "<strong>" + tipConfig[i].name + ":</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span><br/>";
+        }
+      return result;
     });
 
   var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
