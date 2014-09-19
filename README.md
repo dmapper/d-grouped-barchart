@@ -24,7 +24,7 @@ app.component require('d-grouped-barchart')
 ```
 #### Styles
 ```
-@import '/node_modules/d-grouped-barchart/index.styl'
+@import '/node_modules/d-grouped-barchart/styles/index.styl'
 ```
 #### Data format
 ```coffee
