@@ -1,6 +1,6 @@
 {
   "name": "d-grouped-barchart",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Derby grouped bar chart component using d3 and d3-tip.",
   "main": "index.js",
   "repository": {
