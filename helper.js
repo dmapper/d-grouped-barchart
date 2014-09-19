@@ -1,4 +1,4 @@
-var createCanvas, d3, drawHorizontalAxis, drawVerticalAxis, toFixed2;
+var createCanvas, d3, drawHorizontalAxis, drawVerticalAxis, toFixed2, toggleClass, hasClass;
 
 d3 = require('d3');
 
@@ -51,9 +51,26 @@ toFixed2 = function(x) {
   return ~~(x * 100) / 100;
 };
 
+hasClass = function (elem, className) {
+  return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
+};
+
+toggleClass = function (elem, className) {
+  var newClass = ' ' + elem.className.replace( /[\t\r\n]/g, ' ' ) + ' ';
+  if (hasClass(elem, className)) {
+    while (newClass.indexOf(' ' + className + ' ') >= 0 ) {
+      newClass = newClass.replace( ' ' + className + ' ' , ' ' );
+    }
+    elem.className = newClass.replace(/^\s+|\s+$/g, '');
+  } else {
+    elem.className += ' ' + className;
+  }
+};
+
 module.exports = {
   createCanvas: createCanvas,
   drawHorizontalAxis: drawHorizontalAxis,
   drawVerticalAxis: drawVerticalAxis,
-  toFixed2: toFixed2
+  toFixed2: toFixed2,
+  toggleClass: toggleClass
 };

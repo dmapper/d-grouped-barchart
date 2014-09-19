@@ -162,7 +162,6 @@ BarChart.prototype.setScales = function(width, height) {
 
 BarChart.prototype.draw = function() {
   require('./d3.tip.min.js');
-  require('./jquery.min.js');
 
   var that = this;
   var model = this.model;
@@ -294,15 +293,11 @@ BarChart.prototype.draw = function() {
 //  d3.select(window).on("resize", resize);
 
   var toggle = function() {
-    var $parent = $(that.chart).parent();
+    var parent = that.chart.parentNode;
     that.empty();
-    if ($parent.hasClass('fullscreen')) {
-      $parent.removeClass('fullscreen');
-    } else {
-      $parent.addClass('fullscreen');
-    }
+    helper.toggleClass(parent, 'fullscreen');
     // update width
-    width = $(that.chart).width();
+    width = that.chart.offsetWidth;
     width = width - that.margins.left - that.margins.right;
     // updage scales
     that.setScales(width, height);
