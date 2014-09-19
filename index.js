@@ -1,5 +1,5 @@
 var d3 = require('d3');
-var helper = require('./helper.js');
+var helper = require('./lib/helper.js');
 var testData = require('./data.json');
 
 module.exports = BarChart;
@@ -161,7 +161,7 @@ BarChart.prototype.setScales = function(width, height) {
 }
 
 BarChart.prototype.draw = function() {
-  require('./d3.tip.min.js');
+  require('./lib/d3.tip.min.js');
 
   var that = this;
   var model = this.model;
