@@ -1,5 +1,6 @@
 d-grouped-barchart
 ==================
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/dmapper/d-grouped-barchart?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Derby grouped bar chart component using d3 and d3-tip.
 
 ## Features
