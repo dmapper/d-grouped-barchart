@@ -107,7 +107,6 @@ BarChart.prototype.setScales = function(width, height) {
   this.xAxis = d3.svg.axis().scale(this.x0).orient("bottom");
   this.yAxis = d3.svg.axis().scale(this.y).orient("left").tickFormat(d3.format("d"));
 
-  console.log(this.keys);
   // prepare data
   data.forEach(function(d) {
     d.properties = (that.keys).map(function(name) { return {name: name, value: +d[name]}; });
