@@ -180,6 +180,8 @@ BarChart.prototype.draw = function() {
     tipConfig = [ {name: 'Value', percentage: false} ];
   }
   var legend;
+  var legendRectSize = 10;
+  var legendItemWidth = 70;
 
   this.setScales(width, height);
 
@@ -262,17 +264,17 @@ BarChart.prototype.draw = function() {
     .attr("class", "legend")
     .attr("height", 100)
     .attr("width", 100)
-    .attr("transform", "translate(-5," + (height+20) + ")");
+    .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
 
   legend.selectAll("rect")
       .data(legendConfig)
     .enter().append("rect")
-      .attr("x", width - 65)
-      .attr("y", function(d, i) {
-        return i * 20;
+      .attr("x", function(d, i) {
+        return width + i*legendItemWidth - legendRectSize;
       })
-      .attr("width", 10)
-      .attr("height", 10)
+      .attr("y", 0)
+      .attr("width", legendRectSize)
+      .attr("height", legendRectSize)
       .style("fill", function(d, i) {
         return legendConfig[i].color;
       });
@@ -281,15 +283,13 @@ BarChart.prototype.draw = function() {
       .data(legendConfig)
     .enter()
       .append("text")
-      .attr("x", width - 52)
-      .attr("y", function(d, i) {
-        return i * 20 + 9;
+      .attr("x", function(d, i) {
+        return width + i*legendItemWidth + 5;
       })
+      .attr("y", legendRectSize)
       .text(function(d, i) {
         return legendConfig[i].text;
       });
-
-//  d3.select(window).on("resize", resize);
 
   var toggle = function() {
     var parent = that.chart.parentNode;
