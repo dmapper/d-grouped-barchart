@@ -199,6 +199,25 @@ BarChart.prototype.draw = function() {
       return result;
     });
 
+  var tooltip = d3.select(this.chart)
+    .append("div")
+      .attr("class", "tip")
+      .style(
+        {
+          "position": "absolute",
+          "width": (width+margins.left+margins.right) + "px",
+          "height": (height+margins.top+margins.bottom) + "px",
+          "padding": "2px",
+          "font": "12px sans-serif",
+          "text-align": "center",
+          "background": "#fff",
+          "border": "1px solid black",
+          "border-radius": "8px",
+          "visibility": "hidden"
+        }
+      )
+      .text("a sample tooltip");
+
   var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
 
   canvas.append("svg:rect")
@@ -253,6 +272,20 @@ BarChart.prototype.draw = function() {
     })
     .on("mouseover", tip.show)
     .on("mouseout", tip.hide)
+    .on("click", function() {
+      that.empty();
+      return tooltip.style("visibility", "visible")
+        .append("span")
+          .text("X")
+          .style("position", "absolute")
+          .style("top", "10px")
+          .style("right", "10px")
+          .style("cursor", "pointer")
+          .on("click", function() {
+            d3.select(".tip").remove();
+            that.draw();
+          });
+    })
     .append("svg:title").text(function(d) {
       return helper.toFixed2(d.value);
     });
@@ -294,6 +327,7 @@ BarChart.prototype.draw = function() {
   var toggle = function() {
     var parent = that.chart.parentNode;
     that.empty();
+    d3.select(".tip").remove();
     helper.toggleClass(parent, 'fullscreen');
     // update width
     width = that.chart.offsetWidth;
