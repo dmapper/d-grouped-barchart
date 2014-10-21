@@ -206,8 +206,8 @@ BarChart.prototype.draw = function() {
       .style(
         {
           "position": "absolute",
-          "width": (width+margins.left+margins.right) + "px",
-          "height": (height+margins.top+margins.bottom) + "px",
+          "width": (width/4) + "px", //(width+margins.left+margins.right) + "px",
+          "height": (height/4) + "px", //(height+margins.top+margins.bottom) + "px",
           "padding": "2px",
           "font": "12px sans-serif",
           "text-align": "center",
@@ -279,8 +279,11 @@ BarChart.prototype.draw = function() {
 
   if (tipContentCb != null) {
     barSel = barSel.on("click", function (d) {
-      that.empty();
+      //that.empty();
+      //var pos = d3.mouse(this);
       return tooltip.style("visibility", "visible")
+        .style("top", (event.pageY-10)+"px")
+        .style("left",(event.pageX+10)+"px")
         .html(tipContentCb(d))
         .append("span")
         .text("X")
@@ -289,8 +292,9 @@ BarChart.prototype.draw = function() {
         .style("right", "10px")
         .style("cursor", "pointer")
         .on("click", function () {
-          d3.select(".tip").remove();
-          that.draw();
+          //d3.select(".tip").remove();
+          //that.draw();
+          d3.select(".tip").style("visibility", "hidden");
         });
     });
   }
