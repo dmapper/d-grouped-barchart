@@ -54,7 +54,7 @@ BarChart.prototype.setKeys = function() {
     var _results;
     _results = [];
     for (key in data[0]) {
-      if (key !== groupByKey) {
+      if (key != groupByKey && key != "properties") {
         _results.push(key);
       }
     }
@@ -109,7 +109,7 @@ BarChart.prototype.setScales = function(width, height) {
 
   // prepare data
   data.forEach(function(d) {
-    d.properties = (that.keys).map(function(name) { return {name: name, value: +d[name]}; });
+    d.properties = (that.keys).map(function(name) { return {key: d[groupByKey], name: name, value: +d[name]}; });
   });
 
   // Get Min and Max values
@@ -176,6 +176,7 @@ BarChart.prototype.draw = function() {
   height = height - margins.top - margins.bottom;
   var legendConfig = this.legendConfig;
   var tipConfig = model.get('tipConfig');
+  var tipContentCb = model.get('tipContentCb');
   if (!tipConfig) {
     tipConfig = [ {name: 'Value', percentage: false} ];
   }
@@ -272,23 +273,27 @@ BarChart.prototype.draw = function() {
     })
     .on("mouseover", tip.show)
     .on("mouseout", tip.hide)
-    .on("click", function() {
-      that.empty();
-      return tooltip.style("visibility", "visible")
-        .append("span")
-          .text("X")
-          .style("position", "absolute")
-          .style("top", "10px")
-          .style("right", "10px")
-          .style("cursor", "pointer")
-          .on("click", function() {
-            d3.select(".tip").remove();
-            that.draw();
-          });
-    })
     .append("svg:title").text(function(d) {
       return helper.toFixed2(d.value);
     });
+
+  if (tipContentCb != null) {
+    barSel = barSel.on("click", function (d) {
+      that.empty();
+      return tooltip.style("visibility", "visible")
+        .html(tipContentCb(d))
+        .append("span")
+        .text("X")
+        .style("position", "absolute")
+        .style("top", "10px")
+        .style("right", "10px")
+        .style("cursor", "pointer")
+        .on("click", function () {
+          d3.select(".tip").remove();
+          that.draw();
+        });
+    });
+  }
 
   helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], "");
   helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1], "");
