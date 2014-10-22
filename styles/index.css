@@ -43,6 +43,7 @@ svg {
 
 .fullscreen {
   position: fixed !important;
+  z-index: 0 !important;
   background: #fff;
   left: 0;
   top: 0;
