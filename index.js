@@ -202,22 +202,34 @@ BarChart.prototype.draw = function() {
 
   var tooltip = d3.select(this.chart)
     .append("div")
+      .style("position", "absolute")
+      .style("visibility", "hidden")
       .attr("class", "tip")
-      .style(
-        {
-          "position": "absolute",
-          "width": (width/4) + "px", //(width+margins.left+margins.right) + "px",
-          "height": (height/4) + "px", //(height+margins.top+margins.bottom) + "px",
-          "padding": "2px",
-          "font": "12px sans-serif",
-          "text-align": "center",
-          "background": "#fff",
-          "border": "1px solid black",
-          "border-radius": "8px",
-          "visibility": "hidden"
-        }
-      )
-      .text("a sample tooltip");
+      .append("span")
+        .text("X")
+        .style("position", "absolute")
+        .style("top", "10px")
+        .style("right", "20px")
+        .style("cursor", "pointer")
+        .on("click", function () {
+          d3.select(".tip").style("visibility", "hidden");
+        });
+
+  d3.select(".tip").append("div")
+    .style(
+      {
+        "max-width": (width/3) + "px",
+        "max-height": height + "px",
+        "padding": "12px",
+        "font": "12px sans-serif",
+        "text-align": "center",
+        "background": "#fff",
+        "border": "1px solid black",
+        "border-radius": "8px",
+        "overflow-y": "auto"
+      }
+    )
+    .text("a sample tooltip");
 
   var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
 
@@ -279,23 +291,12 @@ BarChart.prototype.draw = function() {
 
   if (tipContentCb != null) {
     barSel = barSel.on("click", function (d) {
-      //that.empty();
-      //var pos = d3.mouse(this);
-      return tooltip.style("visibility", "visible")
+      return d3.select(".tip")
+         .style("visibility", "visible")
         .style("top", (event.pageY-10)+"px")
         .style("left",(event.pageX+10)+"px")
-        .html(tipContentCb(d))
-        .append("span")
-        .text("X")
-        .style("position", "absolute")
-        .style("top", "10px")
-        .style("right", "10px")
-        .style("cursor", "pointer")
-        .on("click", function () {
-          //d3.select(".tip").remove();
-          //that.draw();
-          d3.select(".tip").style("visibility", "hidden");
-        });
+        .select("div")
+        .html(tipContentCb(d));
     });
   }
 
