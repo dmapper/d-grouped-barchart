@@ -292,9 +292,9 @@ BarChart.prototype.draw = function() {
   if (tipContentCb != null) {
     barSel = barSel.on("click", function (d) {
       return d3.select(".tip")
-         .style("visibility", "visible")
-        .style("top", (event.pageY-10)+"px")
-        .style("left",(event.pageX+10)+"px")
+        .style("visibility", "visible")
+        .style("top", (d3.event.pageY-10)+"px")
+        .style("left",(d3.event.pageX+10)+"px")
         .select("div")
         .html(tipContentCb(d));
     });
