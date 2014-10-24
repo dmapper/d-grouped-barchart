@@ -26,6 +26,7 @@ BarChart.prototype.init = function() {
 BarChart.prototype.empty = function() {
   d3.select(this.chart).select("svg").remove();
   d3.selectAll(".d3-tip").remove();
+  d3.selectAll(".tip").remove();
 };
 
 BarChart.prototype.create = function() {
@@ -200,22 +201,23 @@ BarChart.prototype.draw = function() {
       return result;
     });
 
-  var tooltip = d3.select(this.chart)
+  var tooltip = d3.select("body")
     .append("div")
       .style("position", "absolute")
       .style("visibility", "hidden")
       .attr("class", "tip")
-      .append("span")
-        .text("X")
-        .style("position", "absolute")
-        .style("top", "10px")
-        .style("right", "20px")
-        .style("cursor", "pointer")
-        .on("click", function () {
-          d3.select(".tip").style("visibility", "hidden");
-        });
 
-  d3.select(".tip").append("div")
+  tooltip.append("span")
+    .text("X")
+    .style("position", "absolute")
+    .style("top", "10px")
+    .style("right", "20px")
+    .style("cursor", "pointer")
+    .on("click", function () {
+      d3.select(".tip").style("visibility", "hidden");
+    });
+
+  tooltip.append("div")
     .style(
       {
         "max-width": (width/3) + "px",
