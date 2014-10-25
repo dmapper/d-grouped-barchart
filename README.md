@@ -51,11 +51,12 @@ data = [
 ```jade
 view(name='d-grouped-barchart', data='{{_page.data}}', groupByKey='role', width='500', height='200')
 ```
-#### Additional parameters to the view
+#### Additional parameters to the component
 * colors - array, defines color of each bar in group, e.g. ['#4f81bd', '#c0504d']
 * axisHeaders - array, defines x and y axis header respectively, e.g. ["Groups", "Value"]
 * header - string, sets a text on top of the chart 
 * subheader - string, defines a text below the header 
+* tipContentCb - function, returns string html contents which will be displayed in an onclick tooltip. The tooltips won't work unless the parameter is specified.
 
 ## Gallery
 ![Alt text](/screenshots/with-tooltip.png?raw=true "Grouped bar chart with tooltip")
