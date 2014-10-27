@@ -208,10 +208,10 @@ BarChart.prototype.draw = function() {
       .attr("class", "tip")
 
   tooltip.append("span")
-    .text("X")
+    .text("x")
     .style("position", "absolute")
     .style("top", "10px")
-    .style("right", "20px")
+    .style("right", "15px")
     .style("cursor", "pointer")
     .on("click", function () {
       d3.select(".tip").style("visibility", "hidden");
@@ -222,7 +222,7 @@ BarChart.prototype.draw = function() {
       {
         "max-width": (width/3) + "px",
         "max-height": height + "px",
-        "padding": "12px",
+        "padding": "20px 16px",
         "font": "12px sans-serif",
         "text-align": "center",
         "background": "#fff",
