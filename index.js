@@ -177,10 +177,17 @@ BarChart.prototype.draw = function() {
   height = height - margins.top - margins.bottom;
   var legendConfig = this.legendConfig;
   var tipConfig = model.get('tipConfig');
-  var tipContentCb = model.get('tipContentCb');
+  var onclickTipContentCb = model.get('onClickTip'); //model.get('tipContentCb');
+  var onhoverTipContentCb = model.get('onHoverTip');
+
   if (!tipConfig) {
     tipConfig = [ {name: 'Value', percentage: false} ];
   }
+
+  var onhoverTipContentCb = function (d) {
+    return "<strong>Value:</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span><br/>";
+  };
+
   var legend;
   var legendRectSize = 10;
   var legendItemWidth = 70;
@@ -190,22 +197,24 @@ BarChart.prototype.draw = function() {
   var tip = d3.tip()
     .attr("class", "d3-tip")
     .offset([-10, 0])
-    .html(function (d) {
-      var result = "";
-      for(var i = 0; i < tipConfig.length; i++)
-        if (tipConfig[i].percentage) {
-          result += "<strong>" + tipConfig[i].name + ":</strong> <span style='color:red'>" + (helper.toFixed2(d.value*100/that.total)) + "%</span><br/>";
-        } else {
-          result += "<strong>" + tipConfig[i].name + ":</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span><br/>";
-        }
-      return result;
-    });
+    .html(onhoverTipContentCb);
+
+//    function (d) {
+//      var result = "";
+//      for(var i = 0; i < tipConfig.length; i++)
+//        if (tipConfig[i].percentage) {
+//          result += "<strong>" + tipConfig[i].name + ":</strong> <span style='color:red'>" + (helper.toFixed2(d.value*100/that.total)) + "%</span><br/>";
+//        } else {
+//          result += "<strong>" + tipConfig[i].name + ":</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span><br/>";
+//        }
+//      return result;
+//    });
 
   var tooltip = d3.select("body")
     .append("div")
       .style("position", "absolute")
       .style("visibility", "hidden")
-      .attr("class", "tip")
+      .attr("class", "tip");
 
   tooltip.append("span")
     .text("x")
@@ -227,7 +236,6 @@ BarChart.prototype.draw = function() {
         "text-align": "center",
         "background": "#fff",
         "border": "1px solid black",
-        "border-radius": "8px",
         "overflow-y": "auto"
       }
     )
@@ -291,14 +299,14 @@ BarChart.prototype.draw = function() {
       return helper.toFixed2(d.value);
     });
 
-  if (tipContentCb != null) {
+  if (onclickTipContentCb != null) {
     barSel = barSel.on("click", function (d) {
       return d3.select(".tip")
         .style("visibility", "visible")
         .style("top", (d3.event.pageY-10)+"px")
         .style("left",(d3.event.pageX+10)+"px")
         .select("div")
-        .html(tipContentCb(d));
+        .html(onclickTipContentCb(d));
     });
   }
 
