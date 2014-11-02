@@ -5,7 +5,7 @@ Derby grouped bar chart component using d3 and d3-tip.
 ## Features
 * Grouping key as a setting
 * Negative values
-* Showing tooltips on hover and on click
+* Custom on click and on hover tooltips 
 * Legend based on the grouping key 
 * Title and subtitles parameters
 * Fullscreen mode on double click
@@ -57,7 +57,8 @@ view(name='d-grouped-barchart', data='{{_page.data}}', groupByKey='role', width=
 * axisHeaders - array, defines x and y axis header respectively, e.g. ["Groups", "Value"]
 * header - string, sets a text on top of the chart 
 * subheader - string, defines a text below the header 
-* tipContentCb - function, returns string html contents which will be displayed in an onclick tooltip. The tooltips won't work unless the parameter is specified.
+* tipContentClick - callback, returns a string html contents which will be displayed in an onclick tooltip. The tooltips won't work unless the parameter is specified.
+* tipContentHover - callback, returns a string html contents displayed as an onhover tooltip.
 
 ## Gallery
 ![Alt text](/screenshots/with-tooltip.png?raw=true "Grouped bar chart with tooltip")
