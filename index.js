@@ -128,12 +128,6 @@ BarChart.prototype.setScales = function(width, height) {
     });
   });
 
-  var total = d3.sum(data, function(d) {
-    return d3.sum(d.properties, function(d) {
-      return d.value;
-    });
-  });
-
   // Get the x axis position (handle negative values)
   this.xAxisTransform = height
   if(minVal < 0 && 0 < maxVal) {
@@ -157,7 +151,6 @@ BarChart.prototype.setScales = function(width, height) {
 
   this.minVal = minVal;
   this.maxVal = maxVal;
-  this.total = total;
 }
 
 BarChart.prototype.draw = function() {
@@ -176,17 +169,15 @@ BarChart.prototype.draw = function() {
   width = width - margins.left - margins.right;
   height = height - margins.top - margins.bottom;
   var legendConfig = this.legendConfig;
-  var tipConfig = model.get('tipConfig');
-  var onclickTipContentCb = model.get('onClickTip'); //model.get('tipContentCb');
-  var onhoverTipContentCb = model.get('onHoverTip');
 
-  if (!tipConfig) {
-    tipConfig = [ {name: 'Value', percentage: false} ];
+  var onclickTipContentCb = model.get('tipContentClick');
+  var onhoverTipContentCb = model.get('tipContentHover');
+
+  if (!onhoverTipContentCb) {
+    onhoverTipContentCb = function (d) {
+      return "<strong>Value:</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span>";
+    };
   }
-
-  var onhoverTipContentCb = function (d) {
-    return "<strong>Value:</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span><br/>";
-  };
 
   var legend;
   var legendRectSize = 10;
@@ -198,17 +189,6 @@ BarChart.prototype.draw = function() {
     .attr("class", "d3-tip")
     .offset([-10, 0])
     .html(onhoverTipContentCb);
-
-//    function (d) {
-//      var result = "";
-//      for(var i = 0; i < tipConfig.length; i++)
-//        if (tipConfig[i].percentage) {
-//          result += "<strong>" + tipConfig[i].name + ":</strong> <span style='color:red'>" + (helper.toFixed2(d.value*100/that.total)) + "%</span><br/>";
-//        } else {
-//          result += "<strong>" + tipConfig[i].name + ":</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span><br/>";
-//        }
-//      return result;
-//    });
 
   var tooltip = d3.select("body")
     .append("div")
