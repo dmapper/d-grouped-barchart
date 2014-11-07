@@ -14,7 +14,7 @@ BarChart.prototype.init = function() {
   model.setNull("keys", []);
   model.setNull("axisHeaders", ["Groups", "Value"]);
   //model.setNull("legendConfig", []);
-  model.setNull("margins", {top: 30, right: 40, bottom: 55, left: 40});
+  model.setNull("margins", {top: 30, right: 40, bottom: 75, left: 40});
 
   this.axisHeaders = model.get("axisHeaders");
   this.margins = model.get("margins");
@@ -290,8 +290,8 @@ BarChart.prototype.draw = function() {
     });
   }
 
-  helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], "");
-  helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1], "");
+  helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], this.xScale);
+  helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1]);
 
   legend = canvas.append("g")
     .attr("class", "legend")
@@ -305,7 +305,7 @@ BarChart.prototype.draw = function() {
       .attr("x", function(d, i) {
         return width + i*legendItemWidth - legendRectSize;
       })
-      .attr("y", 0)
+      .attr("y", 25)
       .attr("width", legendRectSize)
       .attr("height", legendRectSize)
       .style("fill", function(d, i) {
@@ -319,7 +319,7 @@ BarChart.prototype.draw = function() {
       .attr("x", function(d, i) {
         return width + i*legendItemWidth + 5;
       })
-      .attr("y", legendRectSize)
+      .attr("y", 30+legendRectSize)
       .text(function(d, i) {
         return legendConfig[i].text;
       });
