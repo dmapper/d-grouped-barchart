@@ -1,11 +1,12 @@
-svg {
-  width: inherit;
-  height: inherit;
-}
 .d-d3-barchart {
-  width: inherit;
-  height: inherit;
+    width: inherit;
+    height: inherit;
 }
+.d-d3-barchart svg {
+    width: inherit;
+    height: inherit;
+}
+
 ._axis path,
 ._axis line {
   fill: none;
