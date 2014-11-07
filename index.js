@@ -305,7 +305,7 @@ BarChart.prototype.draw = function() {
       .attr("x", function(d, i) {
         return width + i*legendItemWidth - legendRectSize;
       })
-      .attr("y", 25)
+      .attr("y", 30)
       .attr("width", legendRectSize)
       .attr("height", legendRectSize)
       .style("fill", function(d, i) {
