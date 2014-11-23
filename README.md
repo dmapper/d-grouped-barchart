@@ -2,6 +2,8 @@ d-grouped-barchart
 ==================
 Derby grouped bar chart component using d3 and d3-tip.
 
+[![NPM](https://nodei.co/npm/d-grouped-barchart.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/d-grouped-barchart/)
+
 ## Features
 * Grouping key as a setting
 * Negative values
