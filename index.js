@@ -197,7 +197,7 @@ BarChart.prototype.draw = function() {
       .attr("class", "tip");
 
   tooltip.append("span")
-    .text("x")
+    .html("&times;")
     .style("position", "absolute")
     .style("top", "10px")
     .style("right", "15px")
