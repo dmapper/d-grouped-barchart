@@ -21,6 +21,7 @@
   background: rgba(0,0,0,0.8);
   color: #fff;
   top: 100%;
+  z-index: 2 !important;
 /* Creates a small triangle extender for the tooltip */
 /* Style northward tooltips differently */
 }
@@ -43,7 +44,7 @@
 
 .fullscreen {
   position: fixed !important;
-  z-index: 0 !important;
+  z-index: 1 !important;
   background: #fff;
   left: 0;
   top: 0;
