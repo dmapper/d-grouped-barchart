@@ -12,6 +12,8 @@ Derby grouped bar chart component using d3 and d3-tip.
 * Title and subtitles parameters
 * Fullscreen mode on double click
 * Legend and colors customization
+* innerPadding - space between bars within a group
+* outerPadding - space between groups of bars
 
 ## Usage
 
