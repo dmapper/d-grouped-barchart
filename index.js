@@ -96,10 +96,8 @@ BarChart.prototype.setScales = function(width, height) {
     data = testData;
   }
 
-  this.yScale = d3.scale.linear()
-    .range([0, height]);
   this.xScale = d3.scale.ordinal()
-    .rangeBands([0, width], 0.1);
+    .rangeBands([0, width], model.get("outerPadding"));
   // scales: ranges
   this.x0 = d3.scale.ordinal().rangeRoundBands([0, width], model.get("outerPadding"));
   this.x1 = d3.scale.ordinal();
@@ -137,8 +135,6 @@ BarChart.prototype.setScales = function(width, height) {
   }
 
   this.xScale.domain(d3.range(data.length));
-  // this could be implemented as extent for a relative scale
-  this.yScale.domain([0, d3.max(data, function(d) { return d.value })]);
 
   // scales: domains
   this.x0.domain(data.map(function(d) {
