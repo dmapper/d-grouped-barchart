@@ -12,6 +12,7 @@ Derby grouped bar chart component using d3 and d3-tip.
 * Title and subtitles parameters
 * Fullscreen mode on double click
 * Legend and colors customization
+* Setting space between bars
 
 ## Usage
 
@@ -60,7 +61,9 @@ view(name='d-grouped-barchart', data='{{_page.data}}', groupByKey='role', width=
 * header - string, sets a text on top of the chart 
 * subheader - string, defines a text below the header 
 * tipContentClick - callback, returns a string html contents which will be displayed in an onclick tooltip. The tooltips won't work unless the parameter is specified.
-* tipContentHover - callback, returns a string html contents displayed as an onhover tooltip.
+* tipContentHover - callback, returns a string html contents displayed as an onhover tooltip
+* innerPadding - space between bars within a group
+* outerPadding - space between groups of bars
 
 ## Gallery
 ![Alt text](/screenshots/with-tooltip.png?raw=true "Grouped bar chart with tooltip")
