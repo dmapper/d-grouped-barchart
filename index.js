@@ -16,7 +16,7 @@ BarChart.prototype.init = function() {
   //model.setNull("legendConfig", []);
   model.setNull("margins", {top: 30, right: 40, bottom: 75, left: 40});
   model.setNull("innerPadding", 0);
-  model.setNull("outerPadding", 0.1);
+  model.setNull("outerPadding", 0.5);
 
   this.axisHeaders = model.get("axisHeaders");
   this.margins = model.get("margins");
@@ -89,6 +89,7 @@ BarChart.prototype.setScales = function(width, height) {
   var model = this.model;
   var that = this;
   var groupByKey = model.get("groupByKey") || "role";
+  var xRange = model.get("xRange") || [0, width];
   var yStep = model.get("yStep")|0;
   var maxVal, minVal;
   var data = model.get("data");
@@ -99,7 +100,7 @@ BarChart.prototype.setScales = function(width, height) {
   this.xScale = d3.scale.ordinal()
     .rangeBands([0, width], model.get("outerPadding"));
   // scales: ranges
-  this.x0 = d3.scale.ordinal().rangeRoundBands([0, width], model.get("outerPadding"));
+  this.x0 = d3.scale.ordinal().rangeRoundBands(xRange, model.get("outerPadding"));
   this.x1 = d3.scale.ordinal();
   this.y = d3.scale.linear().range([height, 0]);
   // color func
