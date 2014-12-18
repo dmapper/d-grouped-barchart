@@ -64,6 +64,7 @@ view(name='d-grouped-barchart', data='{{_page.data}}', groupByKey='role', width=
 * tipContentHover - callback, returns a string html contents displayed as an onhover tooltip
 * innerPadding - space between bars within a group
 * outerPadding - space between groups of bars
+* xRange - override X scale's range
 
 ## Gallery
 ![Alt text](/screenshots/with-tooltip.png?raw=true "Grouped bar chart with tooltip")
