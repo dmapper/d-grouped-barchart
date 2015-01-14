@@ -189,6 +189,22 @@ BarChart.prototype.draw = function() {
     .offset([-10, 0])
     .html(onhoverTipContentCb);
 
+  d3.select("body")
+    .on("wheel", function() {
+      d3.select(".tip").style("visibility", "hidden");
+    })
+    .on("mousewheel", function() {
+      d3.select(".tip").style("visibility", "hidden");
+    })
+    .on("MozMousePixelScroll", function() {
+      d3.select(".tip").style("visibility", "hidden");
+    })
+    .on("touchstart", function() {
+      d3.select(".tip").style("visibility", "hidden");
+    });
+
+  var tipContainerWidth = 220;
+
   var tooltip = d3.select("body")
     .append("div")
       .style("position", "absolute")
@@ -282,8 +298,14 @@ BarChart.prototype.draw = function() {
     barSel = barSel.on("click", function (d) {
       return d3.select(".tip")
         .style("visibility", "visible")
-        .style("top", (d3.event.pageY-10)+"px")
-        .style("left",(d3.event.pageX+10)+"px")
+        .style("top", (d3.event.pageY - 10) + "px")
+        .style("left", function() {
+          if ( (d3.event.pageX + tipContainerWidth) > width) {
+            return (d3.event.pageX + 10 - tipContainerWidth) + "px";
+          } else {
+            return (d3.event.pageX + 10) + "px";
+          }
+        })
         .select("div")
         .html(onclickTipContentCb(d));
     });
