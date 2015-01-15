@@ -209,6 +209,7 @@ BarChart.prototype.draw = function() {
     .append("div")
       .style("position", "absolute")
       .style("visibility", "hidden")
+      .style("width", tipContainerWidth + "px")
       .attr("class", "tip");
 
   tooltip.append("span")
