@@ -204,12 +204,14 @@ BarChart.prototype.draw = function() {
     });
 
   var tipContainerWidth = 220;
+  var tipContainerHeight = 220;
 
   var tooltip = d3.select("body")
     .append("div")
       .style("position", "absolute")
       .style("visibility", "hidden")
       .style("width", tipContainerWidth + "px")
+      .style("height", tipContainerHeight + "px")
       .attr("class", "tip");
 
   tooltip.append("span")
@@ -225,8 +227,8 @@ BarChart.prototype.draw = function() {
   tooltip.append("div")
     .style(
       {
-        "max-width": (width/3) + "px",
-        "max-height": height + "px",
+        "max-width": tipContainerWidth + "px",
+        "max-height": tipContainerHeight + "px",
         "padding": "20px 16px",
         "font": "12px sans-serif",
         "text-align": "center",
@@ -299,9 +301,9 @@ BarChart.prototype.draw = function() {
     barSel = barSel.on("click", function (d) {
       return d3.select(".tip")
         .style("visibility", "visible")
-        .style("top", (d3.event.pageY - 10) + "px")
+        .style("top", (d3.event.pageY - 20) + "px")
         .style("left", function() {
-          if ( (d3.event.pageX + tipContainerWidth) > width) {
+          if ( (d3.event.pageX + tipContainerWidth) > width ) {
             return (d3.event.pageX + 10 - tipContainerWidth) + "px";
           } else {
             return (d3.event.pageX + 10) + "px";
