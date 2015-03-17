@@ -7,6 +7,7 @@ function BarChart() {}
 BarChart.prototype.view = __dirname;
 
 BarChart.prototype.init = function() {
+
   var model = this.model;
   model.setNull("data", []);
   model.setNull("colors", ['#4f81bd', '#c0504d']);
@@ -20,6 +21,10 @@ BarChart.prototype.init = function() {
 
   this.axisHeaders = model.get("axisHeaders");
   this.margins = model.get("margins");
+
+  this.pageTooltip = this.model.get('pageTooltip') || this.getAttribute('pageTooltip');
+  this.chartType = this.model.get('isschartTypeue') || this.getAttribute('chartType');
+  this.issue = this.model.get('issue') || this.getAttribute('issue');
 
   this.setKeys();
   this.setLegend();
@@ -318,6 +323,15 @@ BarChart.prototype.draw = function() {
         .select("div")
         .html(onclickTipContentCb(d));
     });
+  }
+
+  if (this.pageTooltip) {
+    var self = this;
+    barSel.on("click", function(d){
+      d.gameId = self.model.root.get('_page.game.id');
+      d.issue = self.issue;
+      self.page.tooltip.show(this, self.chartType, d);
+    })
   }
 
   helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], this.xScale);
