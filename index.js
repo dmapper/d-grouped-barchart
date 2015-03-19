@@ -23,7 +23,7 @@ BarChart.prototype.init = function() {
   this.margins = model.get("margins");
 
   this.pageTooltip = this.model.get('pageTooltip') || this.getAttribute('pageTooltip');
-  this.chartType = this.model.get('isschartTypeue') || this.getAttribute('chartType');
+  this.chartType = this.model.get('chartType') || this.getAttribute('chartType');
   this.issue = this.model.get('issue') || this.getAttribute('issue');
 
   this.setKeys();
