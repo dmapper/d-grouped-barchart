@@ -1,6 +1,5 @@
 var d3 = require('d3');
 var helper = require('./lib/helper.js');
-var testData = require('./data.json');
 
 module.exports = BarChart;
 function BarChart() {}
@@ -54,9 +53,7 @@ BarChart.prototype.create = function() {
 BarChart.prototype.setKeys = function() {
   var model = this.model;
   var groupByKey = model.get("groupByKey") || "role";
-  var data = model.get("data");
-  if(!data[0])
-    data = testData;
+  var data = model.get("data") || [];
   var key;
   this.keys = (function() {
     var _results;
@@ -97,10 +94,7 @@ BarChart.prototype.setScales = function(width, height) {
   var xRange = model.get("xRange") || [0, width];
   var yStep = model.get("yStep")|0;
   var maxVal, minVal;
-  var data = model.get("data");
-  if(!data[0]) {
-    data = testData;
-  }
+  var data = model.get("data") || [];
 
   this.xScale = d3.scale.ordinal()
     .rangeBands([0, width], model.get("outerPadding"));
@@ -162,10 +156,7 @@ BarChart.prototype.draw = function() {
 
   var that = this;
   var model = this.model;
-  var data = model.get("data");
-  if (!data[0]) {
-    data = testData;
-  }
+  var data = model.get("data") || [];
   var groupByKey = model.get("groupByKey") || "role";
   var margins = model.get("margins");
   var width = parseInt(model.get("width")) || (this.chart).offsetWidth || 800;
