@@ -188,15 +188,19 @@ BarChart.prototype.draw = function() {
   d3.select("body")
     .on("wheel", function() {
       d3.select(".tip").style("visibility", "hidden");
+      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
     })
     .on("mousewheel", function() {
       d3.select(".tip").style("visibility", "hidden");
+      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
     })
     .on("MozMousePixelScroll", function() {
       d3.select(".tip").style("visibility", "hidden");
+      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
     })
     .on("touchstart", function() {
       d3.select(".tip").style("visibility", "hidden");
+      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
     });
 
   var tipContainerWidth = 220;
