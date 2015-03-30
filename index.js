@@ -152,7 +152,7 @@ BarChart.prototype.setScales = function(width, height) {
 }
 
 BarChart.prototype.draw = function() {
-  require('./lib/d3.tip.min.js');
+  require('./lib/d3.tip.js');
 
   var that = this;
   var model = this.model;
