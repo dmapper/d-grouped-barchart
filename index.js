@@ -176,7 +176,7 @@ BarChart.prototype.draw = function() {
 
   var legend;
   var legendRectSize = 10;
-  var legendItemWidth = 70;
+  var legendItemWidth = model.get('legendItemWidth') || 100;
 
   this.setScales(width, height);
 
