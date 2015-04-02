@@ -241,13 +241,6 @@ BarChart.prototype.draw = function() {
 
   var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
 
-  canvas.append("svg:rect")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("fill", "rgba(250, 250, 255, 0.6)")
-    .attr("cursor", "pointer")
-    .attr("class", "plot");
-
   var clip = canvas.append("svg:clipPath")
     .attr("class", "clip")
     .append("svg:rect")
