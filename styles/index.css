@@ -1,6 +1,6 @@
 .d-grouped-barchart {
   width: inherit;
-  height: inherit;
+  height: 300px;
 }
 .d-grouped-barchart svg {
   width: inherit;

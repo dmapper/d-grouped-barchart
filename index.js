@@ -36,18 +36,14 @@ BarChart.prototype.empty = function() {
 };
 
 BarChart.prototype.create = function() {
-
-//next up feature
-//  var model = this.model;
-//  var that = this;
-//  model.on("all", "data**", function() {
-//    console.log("Inside data change")
-//    that.empty();
-//    that.setScales();
-//    that.draw();
-//  });
-
   this.draw();
+  var model = this.model;
+  var that = this;
+  model.on("change", "data**", function() {
+    that.empty();
+    that.setScales();
+    that.draw();
+  });
 };
 
 BarChart.prototype.setKeys = function() {
