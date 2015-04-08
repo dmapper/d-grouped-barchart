@@ -245,7 +245,7 @@ BarChart.prototype.draw = function() {
     .attr("width", width)
     .attr("height", height);
 
-  var barSel = canvas.selectAll("rect.bar")
+  var barSel = canvas.selectAll(".g")
     .data(data)
     .enter()
     .append("g").attr("class", "g")
