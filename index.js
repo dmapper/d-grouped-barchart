@@ -36,14 +36,29 @@ BarChart.prototype.empty = function() {
 };
 
 BarChart.prototype.create = function() {
-  this.draw();
-  var model = this.model;
-  var that = this;
+  require('./lib/d3.tip.min.js');
 
+  var model = this.model;
+
+  var onhoverTipContentCb = model.get('tipContentHover');
+
+  if (!onhoverTipContentCb) {
+    onhoverTipContentCb = function (d) {
+      return "<strong>Value:</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span>";
+    };
+  }
+
+  this.tip = d3.tip()
+    .attr("class", "d3-tip")
+    .offset([-10, 0])
+    .html(onhoverTipContentCb);
+
+  this.draw();
+
+  var that = this;
   model.on("change", "data**", function() {
     that.setKeys();
     that.setLegend();
-    that.setScales();
     that.draw();
   });
 
@@ -168,8 +183,6 @@ BarChart.prototype.setScales = function(width, height) {
 }
 
 BarChart.prototype.draw = function() {
-  require('./lib/d3.tip.min.js');
-
   var that = this;
   var model = this.model;
   var data = model.get("data") || [];
@@ -182,24 +195,12 @@ BarChart.prototype.draw = function() {
   var legendConfig = this.legendConfig;
 
   var onclickTipContentCb = model.get('tipContentClick');
-  var onhoverTipContentCb = model.get('tipContentHover');
-
-  if (!onhoverTipContentCb) {
-    onhoverTipContentCb = function (d) {
-      return "<strong>Value:</strong> <span style='color:red'>" + (helper.toFixed2(d.value)) + "</span>";
-    };
-  }
 
   var legend;
   var legendRectSize = 10;
   var legendItemWidth = model.get('legendItemWidth') || 100;
 
   this.setScales(width, height);
-
-  var tip = d3.tip()
-    .attr("class", "d3-tip")
-    .offset([-10, 0])
-    .html(onhoverTipContentCb);
 
   var tipContainerWidth = 220;
   var tipContainerHeight = 120;
@@ -239,7 +240,7 @@ BarChart.prototype.draw = function() {
 
   var canvas = d3.select(this.chart).select("svg").select('g');
   if (canvas.empty()) {
-    canvas = helper.createCanvas(this.chart, width, height, margins, tip);
+    canvas = helper.createCanvas(this.chart, width, height, margins, this.tip);
   }
 
   var barSel = canvas.selectAll(".g");
@@ -297,8 +298,8 @@ BarChart.prototype.draw = function() {
         .style("fill", function (d) {
           return that.color(d.name);
         })
-        .on("mouseover", tip.show)
-        .on("mouseout", tip.hide)
+        .on("mouseover", that.tip.show)
+        .on("mouseout", that.tip.hide)
         .append("svg:title").text(function(d) {
           return helper.toFixed2(d.value);
         });
