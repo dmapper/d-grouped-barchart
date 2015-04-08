@@ -40,7 +40,7 @@ BarChart.prototype.create = function() {
   var model = this.model;
   var that = this;
   model.on("change", "data**", function() {
-    that.empty();
+    //that.empty();
     that.setScales();
     that.draw();
   });
@@ -235,15 +235,18 @@ BarChart.prototype.draw = function() {
     )
     .text("a sample tooltip");
 
-  var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
+  var canvas = d3.select(this.chart).select("svg").select('g');
+  if (canvas.empty()) {
+    canvas = helper.createCanvas(this.chart, width, height, margins, tip);
+  }
 
-  var clip = canvas.append("svg:clipPath")
-    .attr("class", "clip")
-    .append("svg:rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", width)
-    .attr("height", height);
+//  var clip = canvas.append("svg:clipPath")
+//    .attr("class", "clip")
+//    .append("svg:rect")
+//    .attr("x", 0)
+//    .attr("y", 0)
+//    .attr("width", width)
+//    .attr("height", height);
 
   var barSel = canvas.selectAll("rect.bar")
     .data(data)
@@ -252,6 +255,12 @@ BarChart.prototype.draw = function() {
     .attr("transform", function (d) {
       return "translate(" + that.x0(d[groupByKey]) + ",0)";
     });
+
+  barSel
+    .data(data)
+    .exit()
+    .transition()
+    .remove();
 
   barSel.selectAll("rect")
     .data(function (d) {
@@ -286,6 +295,15 @@ BarChart.prototype.draw = function() {
       return helper.toFixed2(d.value);
     });
 
+  barSel.selectAll("rect")
+    .data(function (d) {
+      return d.properties;
+    })
+    .exit()
+    .transition()
+    .attr("height", 0)
+    .remove();
+
   if (onclickTipContentCb != null) {
     barSel = barSel.on("click", function (d) {
       return d3.select(".tip")
@@ -318,14 +336,28 @@ BarChart.prototype.draw = function() {
     })
   }
 
-  helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], this.xScale);
-  helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1]);
+  var horizontalAxis = canvas.select("g._x._axis")
+  if (horizontalAxis.empty()) {
+    helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], this.xScale);
+  } else {
+    horizontalAxis.transition().call(this.xAxis);
+  }
 
-  legend = canvas.append("g")
-    .attr("class", "legend")
-    .attr("height", 100)
-    .attr("width", 100)
-    .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
+  var verticalAxis = canvas.select("g._y._axis")
+  if (verticalAxis.empty()) {
+    helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1]);
+  } else {
+    verticalAxis.transition().call(this.yAxis);
+  }
+
+  var legend = canvas.select("g.legend");
+  if (legend.empty()) {
+    legend = canvas.append("g")
+      .attr("class", "legend")
+      .attr("height", 100)
+      .attr("width", 100)
+      .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
+  }
 
   legend.selectAll("rect")
       .data(legendConfig)
