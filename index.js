@@ -40,7 +40,6 @@ BarChart.prototype.create = function() {
   var model = this.model;
   var that = this;
   model.on("change", "data**", function() {
-    that.empty();
     that.setScales();
     that.draw();
   });
@@ -235,56 +234,96 @@ BarChart.prototype.draw = function() {
     )
     .text("a sample tooltip");
 
-  var canvas = helper.createCanvas(this.chart, width, height, margins, tip);
+  var canvas = d3.select(this.chart).select("svg").select('g');
+  if (canvas.empty()) {
+    canvas = helper.createCanvas(this.chart, width, height, margins, tip);
+  }
 
-  var clip = canvas.append("svg:clipPath")
-    .attr("class", "clip")
-    .append("svg:rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", width)
-    .attr("height", height);
+  var barSel = canvas.selectAll(".g");
 
-  var barSel = canvas.selectAll(".g")
-    .data(data)
-    .enter()
-    .append("g").attr("class", "g")
-    .attr("transform", function (d) {
-      return "translate(" + that.x0(d[groupByKey]) + ",0)";
-    });
+  if (barSel.empty()) {
+    barSel
+      .data(data)
+      .enter()
+      .append("g").attr("class", "g")
+      .attr("transform", function (d) {
+        return "translate(" + that.x0(d[groupByKey]) + ",0)";
+      });
+  } else {
+    barSel
+      .data(data)
+      .transition()
+      .attr("transform", function (d) {
+        return "translate(" + that.x0(d[groupByKey]) + ",0)";
+      });
+  }
 
-  barSel.selectAll("rect")
-    .data(function (d) {
-      return d.properties;
-    })
-    .enter()
-    .append("rect")
-    .attr("width", that.x1.rangeBand())
-    .attr("x", function (d) {
-      return that.x1(d.name);
-    })
-    .attr("y", function (d) {
-      if (d.value < 0) {
-        return that.y(0);
-      } else {
-        return that.y(d.value);
-      }
-    })
-    .attr("height", function (d) {
-      if (d.value < 0) {
-        return that.y(d.value + that.maxVal);
-      } else {
-        return height - that.y(d.value + that.minVal);
-      }
-    })
-    .style("fill", function (d) {
-      return that.color(d.name);
-    })
-    .on("mouseover", tip.show)
-    .on("mouseout", tip.hide)
-    .append("svg:title").text(function(d) {
-      return helper.toFixed2(d.value);
-    });
+//  barSel
+//    .data(data)
+//    .exit()
+//    .transition()
+//    .remove();
+
+  var bars = canvas.selectAll(".g").selectAll("rect");
+
+  if (bars.empty()) {
+    bars
+        .data(function (d) {
+          return d.properties;
+        })
+      .enter()
+        .append("rect")
+        .attr("width", that.x1.rangeBand())
+        .attr("x", function (d) {
+          return that.x1(d.name);
+        })
+        .attr("y", function (d) {
+          if (d.value < 0) {
+            return that.y(0);
+          } else {
+            return that.y(d.value);
+          }
+        })
+        .attr("height", function (d) {
+          if (d.value < 0) {
+            return that.y(d.value + that.maxVal);
+          } else {
+            return height - that.y(d.value + that.minVal);
+          }
+        })
+        .style("fill", function (d) {
+          return that.color(d.name);
+        })
+        .on("mouseover", tip.show)
+        .on("mouseout", tip.hide)
+        .append("svg:title").text(function(d) {
+          return helper.toFixed2(d.value);
+        });
+
+  } else {
+    bars
+      .data(function (d) {
+        return d.properties;
+      })
+      .transition()
+      .attr("x", function (d) {
+        return that.x1(d.name);
+      })
+      .attr("y", function (d) {
+        if (d.value < 0) {
+          return that.y(0);
+        } else {
+          return that.y(d.value);
+        }
+      })
+      .attr("height", function (d) {
+        if (d.value < 0) {
+          return that.y(d.value + that.maxVal);
+        } else {
+          return height - that.y(d.value + that.minVal);
+        }
+      })
+  }
 
   if (onclickTipContentCb != null) {
     barSel = barSel.on("click", function (d) {
@@ -318,14 +357,28 @@ BarChart.prototype.draw = function() {
     })
   }
 
-  helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], this.xScale);
-  helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1]);
+  var horizontalAxis = canvas.select("g._x._axis")
+  if (horizontalAxis.empty()) {
+    helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], this.xScale);
+  } else {
+    horizontalAxis.transition().call(this.xAxis);
+  }
 
-  legend = canvas.append("g")
-    .attr("class", "legend")
-    .attr("height", 100)
-    .attr("width", 100)
-    .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
+  var verticalAxis = canvas.select("g._y._axis")
+  if (verticalAxis.empty()) {
+    helper.drawVerticalAxis(canvas, this.yAxis, this.axisHeaders[1]);
+  } else {
+    verticalAxis.transition().call(this.yAxis);
+  }
+
+  var legend = canvas.select("g.legend");
+  if (legend.empty()) {
+    legend = canvas.append("g")
+      .attr("class", "legend")
+      .attr("height", 100)
+      .attr("width", 100)
+      .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
+  }
 
   legend.selectAll("rect")
       .data(legendConfig)
