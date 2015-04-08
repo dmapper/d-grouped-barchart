@@ -39,10 +39,31 @@ BarChart.prototype.create = function() {
   this.draw();
   var model = this.model;
   var that = this;
+
   model.on("change", "data**", function() {
+    that.setKeys();
+    that.setLegend();
     that.setScales();
     that.draw();
   });
+
+  d3.select("body")
+    .on("wheel.barchart", function() {
+      d3.select(".tip").style("visibility", "hidden");
+      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
+    })
+    .on("mousewheel.barchart", function() {
+      d3.select(".tip").style("visibility", "hidden");
+      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
+    })
+    .on("MozMousePixelScroll.barchart", function() {
+      d3.select(".tip").style("visibility", "hidden");
+      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
+    })
+    .on("touchstart.barchart", function() {
+      d3.select(".tip").style("visibility", "hidden");
+      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
+    });
 };
 
 BarChart.prototype.setKeys = function() {
@@ -179,24 +200,6 @@ BarChart.prototype.draw = function() {
     .attr("class", "d3-tip")
     .offset([-10, 0])
     .html(onhoverTipContentCb);
-
-  d3.select("body")
-    .on("wheel", function() {
-      d3.select(".tip").style("visibility", "hidden");
-      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
-    })
-    .on("mousewheel", function() {
-      d3.select(".tip").style("visibility", "hidden");
-      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
-    })
-    .on("MozMousePixelScroll", function() {
-      d3.select(".tip").style("visibility", "hidden");
-      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
-    })
-    .on("touchstart", function() {
-      d3.select(".tip").style("visibility", "hidden");
-      d3.selectAll(".d3-tip").style({ opacity: 0, 'pointer-events': 'none' });
-    });
 
   var tipContainerWidth = 220;
   var tipContainerHeight = 120;
