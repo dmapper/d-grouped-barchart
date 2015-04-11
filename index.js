@@ -40,7 +40,7 @@ BarChart.prototype.create = function() {
 
   var model = this.model;
 
-  var onhoverTipContentCb = model.get('tipContentHover');
+  var onhoverTipContentCb = this.getAttribute('tipContentHover');
 
   if (!onhoverTipContentCb) {
     onhoverTipContentCb = function (d) {
@@ -194,7 +194,7 @@ BarChart.prototype.draw = function() {
   height = height - margins.top - margins.bottom;
   var legendConfig = this.legendConfig;
 
-  var onclickTipContentCb = model.get('tipContentClick');
+  var onclickTipContentCb = this.getAttribute('tipContentClick');
 
   var legend;
   var legendRectSize = 10;
