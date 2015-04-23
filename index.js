@@ -24,7 +24,6 @@ BarChart.prototype.init = function() {
   this.pageTooltip = this.model.get('pageTooltip') || this.getAttribute('pageTooltip');
   this.chartType = this.model.get('chartType') || this.getAttribute('chartType');
   this.issue = this.model.get('issue') || this.getAttribute('issue');
-
   this.setKeys();
   this.setLegend();
 };
@@ -246,13 +245,13 @@ BarChart.prototype.draw = function() {
   var barSel = canvas.selectAll(".g");
 
   if (barSel.empty()) {
-    barSel
-      .data(data)
+    barSel = barSel
+        .data(data)
       .enter()
-      .append("g").attr("class", "g")
-      .attr("transform", function (d) {
-        return "translate(" + that.x0(d[groupByKey]) + ",0)";
-      });
+        .append("g").attr("class", "g")
+        .attr("transform", function (d) {
+          return "translate(" + that.x0(d[groupByKey]) + ",0)";
+        });
   } else {
     barSel
       .data(data)
@@ -271,7 +270,7 @@ BarChart.prototype.draw = function() {
   var bars = canvas.selectAll(".g").selectAll("rect");
 
   if (bars.empty()) {
-    bars
+    bars = bars
         .data(function (d) {
           return d.properties;
         })
@@ -300,9 +299,6 @@ BarChart.prototype.draw = function() {
         })
         .on("mouseover", that.tip.show)
         .on("mouseout", that.tip.hide)
-        .append("svg:title").text(function(d) {
-          return helper.toFixed2(d.value);
-        });
 
   } else {
     bars
@@ -354,12 +350,18 @@ BarChart.prototype.draw = function() {
 
   if (this.pageTooltip) {
     var self = this;
-    barSel.on("click", function(d){
-      d.gameId = self.model.root.get('_page.game.id');
-      d.issue = self.issue;
-      self.page.tooltip.show(this, self.chartType, d);
-    })
+    bars = bars.on("click", function(d) {
+      var t = helper.clone(d);
+      t.gameId = self.model.root.get('_page.game.id');
+      t.issue = self.issue;
+      self.page.tooltip.show(this, self.chartType, t);
+    });
   }
+
+// Can be a separate parameter for built-in svg tips
+//        .append("svg:title").text(function(d) {
+//          return helper.toFixed2(d.value);
+//        });
 
   var horizontalAxis = canvas.select("g._x._axis")
   if (horizontalAxis.empty()) {
