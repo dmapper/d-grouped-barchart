@@ -21,9 +21,11 @@ BarChart.prototype.init = function() {
   this.axisHeaders = model.get("axisHeaders");
   this.margins = model.get("margins");
 
-  this.pageTooltip = this.model.get('pageTooltip') || this.getAttribute('pageTooltip');
-  this.chartType = this.model.get('chartType') || this.getAttribute('chartType');
-  this.issue = this.model.get('issue') || this.getAttribute('issue');
+  // ajax tooltip
+  this.pageTooltip = this.getAttribute('pageTooltip') || this.model.get('pageTooltip');
+  this.chartType = this.getAttribute('chartType') || this.model.get('chartType');
+  this.issue = this.getAttribute('issue') || this.model.get('issue');
+
   this.setKeys();
   this.setLegend();
 };
