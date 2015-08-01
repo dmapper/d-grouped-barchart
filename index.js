@@ -190,7 +190,9 @@ BarChart.prototype.draw = function() {
   var groupByKey = model.get("groupByKey") || "role";
   var margins = model.get("margins");
   var width = parseInt(model.get("width")) || (this.chart).offsetWidth || 800;
-  var height = parseInt(model.get("height")) || 300;
+  var height = parseInt(model.get("height")) || (this.chart).offsetHeight || 300;
+  var initialHeight = height;
+
   width = width - margins.left - margins.right;
   height = height - margins.top - margins.bottom;
   var legendConfig = this.legendConfig;
@@ -308,6 +310,7 @@ BarChart.prototype.draw = function() {
         return d.properties;
       })
       .transition()
+      .attr("width", that.x1.rangeBand())
       .attr("x", function (d) {
         return that.x1(d.name);
       })
@@ -368,8 +371,13 @@ BarChart.prototype.draw = function() {
   var horizontalAxis = canvas.select("g._x._axis")
   if (horizontalAxis.empty()) {
     helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], this.xScale);
+    //helper.drawHorizontalAxis(focus, xAxis, width, height, config.axisHeaders[0], "")
   } else {
-    horizontalAxis.transition().call(this.xAxis);
+    horizontalAxis.transition()
+      .attr("transform", "translate(0," + this.xAxisTransform + ")")
+      .call(this.xAxis);
+    // update axes titles
+    canvas.select("._x._title").attr("x", width/2)
   }
 
   var verticalAxis = canvas.select("g._y._axis")
@@ -385,6 +393,10 @@ BarChart.prototype.draw = function() {
       .attr("class", "legend")
       .attr("height", 100)
       .attr("width", 100)
+      .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
+  }
+  else {
+    canvas.select("g.legend")
       .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
   }
 
@@ -427,8 +439,25 @@ BarChart.prototype.draw = function() {
   };
 
   canvas.on("dblclick", toggle);
-  // Coming up feature - chart title and subtitle
   d3.select(this.header).on("dblclick", toggle);
   d3.select(this.subheader).on("dblclick", toggle);
+
+  var resize = function() {
+
+    // update width
+    width = that.chart.offsetWidth;
+    width = width - that.margins.left - that.margins.right;
+
+    // update height
+    height = (that.chart.offsetHeight > initialHeight) ? initialHeight : that.chart.offsetHeight;
+    height = height - that.margins.top - that.margins.bottom;
+
+    // updage scales
+    that.setScales(width, height);
+
+    that.draw();
+
+  };
+  d3.select(window).on("resize.d-grouped-barchart", resize)
 
 };
