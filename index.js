@@ -190,8 +190,10 @@ BarChart.prototype.draw = function() {
   var groupByKey = model.get("groupByKey") || "role";
   var margins = model.get("margins");
   var width = parseInt(model.get("width")) || (this.chart).offsetWidth || 800;
-  var height = parseInt(model.get("height")) || (this.chart).offsetHeight || 300;
-  var initialHeight = height;
+  var offsetHeight = this.chart.offsetHeight;
+  var maxHeight = 300;
+  var height = parseInt(model.get("height")) ||
+    (offsetHeight > 0 && offsetHeight < maxHeight ? offsetHeight : maxHeight);
 
   width = width - margins.left - margins.right;
   height = height - margins.top - margins.bottom;
@@ -395,10 +397,10 @@ BarChart.prototype.draw = function() {
       .attr("width", 100)
       .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
   }
-  else {
-    canvas.select("g.legend")
-      .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
-  }
+//  else {
+//    canvas.select("g.legend")
+//      .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
+//  }
 
   legend.selectAll("rect")
       .data(legendConfig)
@@ -442,22 +444,6 @@ BarChart.prototype.draw = function() {
   d3.select(this.header).on("dblclick", toggle);
   d3.select(this.subheader).on("dblclick", toggle);
 
-  var resize = function() {
-
-    // update width
-    width = that.chart.offsetWidth;
-    width = width - that.margins.left - that.margins.right;
-
-    // update height
-    height = (that.chart.offsetHeight > initialHeight) ? initialHeight : that.chart.offsetHeight;
-    height = height - that.margins.top - that.margins.bottom;
-
-    // updage scales
-    that.setScales(width, height);
-
-    that.draw();
-
-  };
-  d3.select(window).on("resize.d-grouped-barchart", resize)
+  d3.select(window).on("resize.d-grouped-barchart", that.draw.bind(that))
 
 };
