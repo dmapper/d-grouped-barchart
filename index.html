@@ -1,16 +1,37 @@
 <index: element="d-grouped-barchart">
+  {{bound}}
   <div>
-    {{if @header}}
-      <div class="{{@headerClass}}" as="header">
-        <div class="_content">
-          <h4 class="-center">{{@header}}</h4>
+    <div as="chartContainer">
+      {{if @header}}
+        <div class="{{@headerClass}}" as="header">
+          <div class="_content">
+            <h4 class="-center">{{@header}}</h4>
+          </div>
+        </div>
+      {{/}}
+      {{if @subheader}}
+        <div class="{{@subheaderClass}}" as="subheader">{{@subheader}}</div>
+      {{/}}
+      <div class="d-grouped-barchart-topbar">
+        <div class="d-grouped-barchart-topbar-title {{@titleClass}}">&nbsp;</div>
+        <div class="d-grouped-barchart-topbar-menu">
+          <label onselectstart="return false" as="dropButton" class="d-grouped-barchart-topbar-userBlock">
+            <input type="checkbox" checked="{{clickSubMenu}}"/><img src="/img/icons/down_small.svg" class="d-grouped-barchart-topbar-arrow"/>
+          </label>
+          <view is="submenu"></view>
         </div>
       </div>
-    {{/}}
-    {{if @subheader}}
-      <div class="{{@subheaderClass}}" as="subheader">{{@subheader}}</div>
-    {{/}}
-    <div class="d-grouped-barchart" as="chart">
+      <div class="d-grouped-barchart" as="chart" on-click="model.set('clickSubMenu', false)">
+      </div>
+    </div>
+  </div>
+  {{/}}
+
+<submenu:>
+  <div as="subMenu" class="d-grouped-barchart-topbar-submenu {{if clickSubMenu != true}}-hidden{{/}}">
+    <div on-click="downloadPNG()">Export to PNG</div>
+    <div class="js-fullscreen">
+      {{if fullscreen}}Collapsed view{{else}}Expanded view{{/}}
     </div>
   </div>
 

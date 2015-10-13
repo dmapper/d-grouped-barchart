@@ -1,9 +1,11 @@
 var d3 = require('d3');
 var helper = require('./lib/helper.js');
+var svgSaver = require('./lib/svgSaver.js');
 
 module.exports = BarChart;
 function BarChart() {}
 BarChart.prototype.view = __dirname;
+BarChart.prototype.style = __dirname;
 
 BarChart.prototype.init = function() {
 
@@ -35,6 +37,11 @@ BarChart.prototype.empty = function() {
   d3.selectAll(".d3-tip").remove();
   d3.selectAll(".tip").remove();
 };
+
+BarChart.prototype.downloadPNG = function() {
+  this.model.set('clickSubMenu', false);
+  return svgSaver.saveSvgAsPng(d3.select(this.chart).select('svg').node(), "picture.png");
+}
 
 BarChart.prototype.create = function() {
   require('./lib/d3.tip.min.js');
@@ -431,18 +438,22 @@ BarChart.prototype.draw = function() {
     var parent = that.chart.parentNode;
     that.empty();
     d3.select(".tip").remove();
-    helper.toggleClass(parent, 'fullscreen');
+    helper.toggleClass(parent, 'd-grouped-barchart-fullscreen');
     // update width
     width = that.chart.offsetWidth;
     width = width - that.margins.left - that.margins.right;
     // updage scales
     that.setScales(width, height);
     that.draw();
+    d3.event.stopPropagation();
+    model.set('clickSubMenu', false);
+    model.set('fullscreen', !model.get('fullscreen'));
   };
 
-  canvas.on("dblclick", toggle);
+  //canvas.on("dblclick", toggle);
   d3.select(this.header).on("dblclick", toggle);
   d3.select(this.subheader).on("dblclick", toggle);
+  d3.select(this.chartContainer).select(".js-fullscreen").on('click', toggle);
 
   d3.select(window).on("resize.d-grouped-barchart", that.draw.bind(that))
 
