@@ -43,6 +43,15 @@ BarChart.prototype.downloadPNG = function() {
   return svgSaver.saveSvgAsPng(d3.select(this.chart).select('svg').node(), "picture.png");
 }
 
+BarChart.prototype.downloadCSV = function() {
+  this.model.set('clickSubMenu', false);
+  var data = this.model.get("data") || [];
+  var keys = Object.keys(data[0]);
+  var index = keys.indexOf('properties');
+  index > -1 && keys.splice(index, 1);
+  return helper.downloadCsv(data, keys, 'bar-chart-data.csv');
+}
+
 BarChart.prototype.create = function() {
   require('./lib/d3.tip.min.js');
 
@@ -93,17 +102,12 @@ BarChart.prototype.setKeys = function() {
   var model = this.model;
   var groupByKey = model.get("groupByKey") || "role";
   var data = model.get("data") || [];
-  var key;
-  this.keys = (function() {
-    var _results;
-    _results = [];
-    for (key in data[0]) {
-      if (key != groupByKey && key != "properties") {
-        _results.push(key);
-      }
-    }
-    return _results;
-  }).call(this);
+  var keys = Object.keys(data[0]);
+  var index1 = keys.indexOf('properties');
+  var index2 = keys.indexOf(groupByKey);
+  index1 > -1 && keys.splice(index1, 1);
+  index2 > -1 && keys.splice(index2, 1);
+  this.keys = keys;
 };
 
 BarChart.prototype.setLegend = function() {

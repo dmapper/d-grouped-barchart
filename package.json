@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/dmapper/d-grouped-barchart",
   "dependencies": {
-    "d3": "^3.4.4"
+    "d3": "^3.4.4",
+    "json2csv": "2.2.1"
   },
   "devDependencies": {},
   "gitHead": "09cfda824e045c092f375f79ce966efd4350bcfd",
