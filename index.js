@@ -46,9 +46,9 @@ BarChart.prototype.downloadPNG = function() {
 BarChart.prototype.downloadCSV = function() {
   this.model.set('clickSubMenu', false);
   var data = this.model.get("data") || [];
-  var keys = Object.keys(data[0]);
-  var index = keys.indexOf('properties');
-  index > -1 && keys.splice(index, 1);
+  var groupByKey = this.model.get("groupByKey") || "role";
+  var keys = this.keys.slice(0);
+  keys.unshift(groupByKey);
   return helper.downloadCsv(data, keys, 'bar-chart-data.csv');
 }
 
