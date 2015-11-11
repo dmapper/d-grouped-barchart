@@ -27,6 +27,7 @@ BarChart.prototype.init = function() {
   this.pageTooltip = this.getAttribute('pageTooltip') || this.model.get('pageTooltip');
   this.chartType = this.getAttribute('chartType') || this.model.get('chartType');
   this.issue = this.getAttribute('issue') || this.model.get('issue');
+  this.csvMode = this.getAttribute('csvMode') || this.model.get('csvMode') || 'regular';
 
   this.setKeys();
   this.setLegend();
@@ -41,16 +42,34 @@ BarChart.prototype.empty = function() {
 BarChart.prototype.downloadPNG = function() {
   this.model.set('clickSubMenu', false);
   return svgSaver.saveSvgAsPng(d3.select(this.chart).select('svg').node(), "picture.png");
-}
+};
 
 BarChart.prototype.downloadCSV = function() {
   this.model.set('clickSubMenu', false);
-  var data = this.model.get("data") || [];
-  var groupByKey = this.model.get("groupByKey") || "role";
-  var keys = this.keys.slice(0);
-  keys.unshift(groupByKey);
-  return helper.downloadCsv(data, keys, 'bar-chart-data.csv');
-}
+
+  if (this.csvMode === 'xhr') {
+    var gameId = this.model.root.get("_page.game.id");
+    var keys = ['group', 'name', 'value'];
+
+    d3.xhr('/api/csv-data/grouped-barchart')
+      .header('Content-Type', 'application/json')
+      .post(JSON.stringify({ gameId: gameId, issue: this.issue}),
+        function(err, res) {
+          if (err) {
+            return alert("Error " + err);
+          }
+          var data = JSON.parse(res.response);
+          return helper.downloadCsv(data, keys, 'grouped-barchart-data.csv');
+        });
+
+  } else {
+    var data = this.model.get("data") || [];
+    var groupByKey = this.model.get("groupByKey") || "role";
+    var keys = this.keys.slice(0);
+    keys.unshift(groupByKey);
+    return helper.downloadCsv(data, keys, 'grouped-barchart-data.csv');
+  }
+};
 
 BarChart.prototype.create = function() {
   require('./lib/d3.tip.min.js');
