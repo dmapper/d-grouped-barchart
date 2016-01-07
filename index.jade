@@ -1,0 +1,27 @@
+index(tag='d-grouped-barchart')
+  bound
+    div(as='chartContainer')
+      if @header
+        div(class='{{@headerClass}}' as='header')
+          ._content
+            h4.-center {{@header}}
+      if @subheader
+        div(class='{{@subheaderClass}}' as='subheader') {{@subheader}}
+      .d-grouped-barchart-topbar
+        .d-grouped-barchart-topbar-title(class='{{titleClass}}') {{title}}
+        .d-grouped-barchart-topbar-menu
+          label.d-grouped-barchart-topbar-userBlock(onselectstart='return false' as='dropButton')
+            input(type='checkbox' checked='{{clickSubMenu}}')
+            img.d-grouped-barchart-topbar-arrow(src='/img/icons/down_small.svg')
+          view(is='submenu')
+      .d-grouped-barchart(as='chart' on-click="model.set('clickSubMenu', false)")
+
+submenu
+  .d-grouped-barchart-topbar-submenu(as='subMenu' class='{{unless clickSubMenu}}-hidden{{/}}')
+    div(on-click='downloadPNG()') Export to PNG
+    div(on-click='downloadCSV()') Export to CSV
+    .js-fullscreen
+      if fullscreen
+        | Collapsed view
+      else
+        | Expanded view

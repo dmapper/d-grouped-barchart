@@ -3,6 +3,10 @@
   "version": "0.8.2",
   "description": "Derby grouped bar chart component using d3 and d3-tip.",
   "main": "index.js",
+  "scripts": {
+    "prepublish": "derby-dev-helpers compile -cj",
+    "postpublish": "derby-dev-helpers revert -cj"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/dmapper/d-grouped-barchart.git"
@@ -24,16 +28,8 @@
     "d3": "^3.4.4",
     "json2csv": "2.2.1"
   },
-  "devDependencies": {},
-  "gitHead": "09cfda824e045c092f375f79ce966efd4350bcfd",
-  "_id": "d-grouped-barchart@0.6.0",
-  "scripts": {},
-  "_shasum": "ca5eb4fdb2b12dc51b4bbd9ba6004d29d1c922a9",
-  "_from": "d-grouped-barchart@>=0.6.0 <0.7.0",
-  "_npmVersion": "1.4.28",
-  "_npmUser": {
-    "name": "ovvn",
-    "email": "omazinov@gmail.com"
+  "devDependencies": {
+    "derby-dev-helpers": "^0.1.2"
   },
   "maintainers": [
     {
@@ -48,12 +44,5 @@
       "name": "cray0000",
       "email": "cray0000@gmail.com"
     }
-  ],
-  "dist": {
-    "shasum": "ca5eb4fdb2b12dc51b4bbd9ba6004d29d1c922a9",
-    "tarball": "http://npm.idecisiongames.com/d-grouped-barchart/-/d-grouped-barchart-0.6.0.tgz"
-  },
-  "directories": {},
-  "_resolved": "http://npm.idecisiongames.com/d-grouped-barchart/-/d-grouped-barchart-0.6.0.tgz",
-  "readme": "ERROR: No README data found!"
+  ]
 }
