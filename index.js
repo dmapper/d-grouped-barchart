@@ -218,7 +218,7 @@ BarChart.prototype.draw = function() {
   var model = this.model;
   var data = model.get("data") || [];
   var groupByKey = model.get("groupByKey") || "role";
-  var margins = model.get("margins");
+  var margins = this.margins || {};
   var width = parseInt(model.get("width")) || (this.chart).offsetWidth || 800;
   var offsetHeight = this.chart.offsetHeight;
   var maxHeight = 300;
@@ -478,6 +478,6 @@ BarChart.prototype.draw = function() {
   d3.select(this.subheader).on("dblclick", toggle);
   d3.select(this.chartContainer).select(".js-fullscreen").on('click', toggle);
 
-  d3.select(window).on("resize.d-grouped-barchart", that.draw.bind(that))
+  d3.select(window).on("resize.d-grouped-barchart" + this.id, that.draw.bind(that))
 
 };
