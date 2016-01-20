@@ -12,27 +12,10 @@ BarChart.prototype.init = function() {
   var model = this.model;
   model.setNull("data", []);
   model.setNull("colors", ['#4f81bd', '#c0504d']);
-  model.setNull("groupByKey", "");
   model.setNull("keys", []);
   model.setNull("axisHeaders", ["Groups", "Value"]);
   //model.setNull("legendConfig", []);
   model.setNull("margins", {top: 30, right: 40, bottom: 75, left: 40});
-  model.setNull("innerPadding", 0);
-  model.setNull("outerPadding", 0.5);
-
-  this.axisHeaders = model.get("axisHeaders");
-  this.margins = model.get("margins");
-
-  // ajax tooltip
-  this.pageTooltip = this.getAttribute('pageTooltip') || this.model.get('pageTooltip');
-  this.chartType = this.getAttribute('chartType') || this.model.get('chartType');
-  this.issue = this.getAttribute('issue') || this.model.get('issue');
-  this.csvMode = this.getAttribute('csvMode') || this.model.get('csvMode') || 'regular';
-  this.titleText = this.getAttribute('title') || '';
-  this.headerText = this.getAttribute('header') || '';
-
-  this.setKeys();
-  this.setLegend();
 };
 
 BarChart.prototype.empty = function() {
@@ -68,10 +51,9 @@ BarChart.prototype.downloadCSV = function() {
         });
 
   } else {
-    var data = this.model.get("data") || [];
-    var groupByKey = this.model.get("groupByKey") || "role";
+    var data = this.data;
     var keys = this.keys.slice(0);
-    keys.unshift(groupByKey);
+    keys.unshift(this.groupByKey);
     return helper.downloadCsv(data, keys, 'grouped-barchart-data.csv');
   }
 };
@@ -80,6 +62,24 @@ BarChart.prototype.create = function() {
   require('./lib/d3.tip.min.js');
 
   var model = this.model;
+
+  this.axisHeaders = model.get("axisHeaders");
+  this.margins = model.get("margins");
+  this.groupByKey = this.getAttribute("groupByKey") || model.get("groupByKey") || "role";
+
+  // ajax tooltip
+  this.pageTooltip = this.getAttribute('pageTooltip') || this.model.get('pageTooltip');
+  this.chartType = this.getAttribute('chartType') || this.model.get('chartType');
+  this.issue = this.getAttribute('issue') || this.model.get('issue');
+  this.csvMode = this.getAttribute('csvMode') || this.model.get('csvMode') || 'regular';
+  this.titleText = this.getAttribute('title') || '';
+  this.headerText = this.getAttribute('header') || '';
+  this.data = this.getAttribute("data") || model.get("data") || [];
+  this.innerPadding = this.getAttribute("innerPadding") || 0
+  this.outerPadding = this.getAttribute("outerPadding") || 0.5
+
+  this.setKeys();
+  this.setLegend();
 
   var onhoverTipContentCb = this.getAttribute('tipContentHover');
 
@@ -97,11 +97,12 @@ BarChart.prototype.create = function() {
   this.draw();
 
   var that = this;
-  model.on("change", "data**", function() {
-    that.setKeys();
-    that.setLegend();
-    that.draw();
-  });
+//  model.on("change", "data**", function() {
+//    this.data = arguments && arguments[1];
+//    that.setKeys();
+//    that.setLegend();
+//    that.draw();
+//  });
 
   d3.select("body")
     .on("wheel.barchart", function() {
@@ -124,11 +125,10 @@ BarChart.prototype.create = function() {
 
 BarChart.prototype.setKeys = function() {
   var model = this.model;
-  var groupByKey = model.get("groupByKey") || "role";
-  var data = model.get("data") || [];
+  var data = this.data;
   var keys = Object.keys(data[0]);
   var index1 = keys.indexOf('properties');
-  var index2 = keys.indexOf(groupByKey);
+  var index2 = keys.indexOf(this.groupByKey);
   index1 > -1 && keys.splice(index1, 1);
   index2 > -1 && keys.splice(index2, 1);
   this.keys = keys;
@@ -157,16 +157,15 @@ BarChart.prototype.setLegend = function() {
 BarChart.prototype.setScales = function(width, height) {
   var model = this.model;
   var that = this;
-  var groupByKey = model.get("groupByKey") || "role";
-  var xRange = model.get("xRange") || [0, width];
-  var yStep = model.get("yStep")|0;
+  var xRange = this.getAttribute("xRange") || this.model.get("xRange") || [0, width];
+  var yStep = model.get("yStep") | 0;
   var maxVal, minVal;
-  var data = model.get("data") || [];
+  var data = this.data
 
   this.xScale = d3.scale.ordinal()
-    .rangeBands([0, width], model.get("outerPadding"));
+    .rangeBands([0, width], this.outerPadding);
   // scales: ranges
-  this.x0 = d3.scale.ordinal().rangeRoundBands(xRange, model.get("outerPadding"));
+  this.x0 = d3.scale.ordinal().rangeRoundBands(xRange, this.outerPadding);
   this.x1 = d3.scale.ordinal();
   this.y = d3.scale.linear().range([height, 0]);
   // color func
@@ -177,7 +176,7 @@ BarChart.prototype.setScales = function(width, height) {
 
   // prepare data
   data.forEach(function(d) {
-    d.properties = (that.keys).map(function(name) { return {key: d[groupByKey], name: name, value: +d[name]}; });
+    d.properties = (that.keys).map(function(name) { return {key: d[that.groupByKey], name: name, value: +d[name]}; });
   });
 
   // Get Min and Max values
@@ -205,9 +204,9 @@ BarChart.prototype.setScales = function(width, height) {
 
   // scales: domains
   this.x0.domain(data.map(function(d) {
-    return d[groupByKey];
+    return d[that.groupByKey];
   }));
-  this.x1.domain(that.keys).rangeRoundBands([0, this.x0.rangeBand()], model.get("innerPadding"));
+  this.x1.domain(that.keys).rangeRoundBands([0, this.x0.rangeBand()], this.innerPadding);
   this.y.domain([minVal, maxVal]);
 
   if(yStep) {
@@ -221,8 +220,7 @@ BarChart.prototype.setScales = function(width, height) {
 BarChart.prototype.draw = function() {
   var that = this;
   var model = this.model;
-  var data = model.get("data") || [];
-  var groupByKey = model.get("groupByKey") || "role";
+  var data = this.data;
   var margins = this.margins || {};
   var width = parseInt(model.get("width")) || (this.chart).offsetWidth || 800;
   var offsetHeight = this.chart.offsetHeight;
@@ -278,11 +276,11 @@ BarChart.prototype.draw = function() {
     )
     .text("a sample tooltip");
 
-  var canvas = d3.select(this.chart).select("svg");
-  if (canvas.select('g').empty()) {
+  var canvas = d3.select(this.chart).select("svg").select("g");
+  if (canvas.empty()) {
     canvas = helper.createCanvas(this.chart, width, height, margins, this.tip);
   } else {
-    canvas
+    d3.select(this.chart).select("svg")
       .attr("width", width + margins.left + margins.right)
       .attr("height", height + margins.top + margins.bottom)
       .select("g")
@@ -297,22 +295,17 @@ BarChart.prototype.draw = function() {
       .enter()
         .append("g").attr("class", "g")
         .attr("transform", function (d) {
-          return "translate(" + that.x0(d[groupByKey]) + ",0)";
+          return "translate(" + that.x0(d[that.groupByKey]) + ",0)";
         });
   } else {
     barSel
       .data(data)
       .transition()
       .attr("transform", function (d) {
-        return "translate(" + that.x0(d[groupByKey]) + ",0)";
+        t = that.x0(d[that.groupByKey]);
+        return "translate(" + t + ",0)";
       });
   }
-
-//  barSel
-//    .data(data)
-//    .exit()
-//    .transition()
-//    .remove();
 
   var bars = canvas.selectAll(".g").selectAll("rect");
 
@@ -438,10 +431,6 @@ BarChart.prototype.draw = function() {
       .attr("width", 100)
       .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
   }
-//  else {
-//    canvas.select("g.legend")
-//      .attr("transform", "translate(-" + (width-margins.left) +"," + (height+margins.top) + ")");
-//  }
 
   legend.selectAll("rect")
       .data(legendConfig)
@@ -477,8 +466,6 @@ BarChart.prototype.draw = function() {
     width = that.chart.offsetWidth;
     that.width = width;
     width = width - that.margins.left - that.margins.right;
-    // updage scales
-    that.setScales(width, height);
     that.draw();
     d3.event.stopPropagation();
     model.set('clickSubMenu', false);
@@ -490,6 +477,6 @@ BarChart.prototype.draw = function() {
   d3.select(this.subheader).on("dblclick", toggle);
   d3.select(this.chartContainer).select(".js-fullscreen").on('click', toggle);
 
-  d3.select(window).on("resize.d-grouped-barchart" + this.id, that.draw.bind(that))
+  d3.select(window).on("resize.d-grouped-barchart" + this.id, that.draw.bind(this))
 
 };
