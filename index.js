@@ -28,6 +28,8 @@ BarChart.prototype.init = function() {
   this.chartType = this.getAttribute('chartType') || this.model.get('chartType');
   this.issue = this.getAttribute('issue') || this.model.get('issue');
   this.csvMode = this.getAttribute('csvMode') || this.model.get('csvMode') || 'regular';
+  this.titleText = this.getAttribute('title') || '';
+  this.headerText = this.getAttribute('header') || '';
 
   this.setKeys();
   this.setLegend();
@@ -41,7 +43,10 @@ BarChart.prototype.empty = function() {
 
 BarChart.prototype.downloadPNG = function() {
   this.model.set('clickSubMenu', false);
-  return svgSaver.saveSvgAsPng(d3.select(this.chart).select('svg').node(), "picture.png");
+  var txt = this.titleText || this.headerText;
+  var title = helper.appendChartTitle(this.chart, this.width, txt);
+  svgSaver.saveSvgAsPng(d3.select(this.chart).select('svg').node(), "picture.png");
+  title.remove();
 };
 
 BarChart.prototype.downloadCSV = function() {
@@ -224,7 +229,7 @@ BarChart.prototype.draw = function() {
   var maxHeight = 300;
   var height = parseInt(model.get("height")) ||
     (offsetHeight > 0 && offsetHeight < maxHeight ? offsetHeight : maxHeight);
-
+  this.width = width;
   width = width - margins.left - margins.right;
   height = height - margins.top - margins.bottom;
   var legendConfig = this.legendConfig;
@@ -470,6 +475,7 @@ BarChart.prototype.draw = function() {
     helper.toggleClass(parent, 'd-grouped-barchart-fullscreen');
     // update width
     width = that.chart.offsetWidth;
+    that.width = width;
     width = width - that.margins.left - that.margins.right;
     // updage scales
     that.setScales(width, height);
