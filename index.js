@@ -273,9 +273,15 @@ BarChart.prototype.draw = function() {
     )
     .text("a sample tooltip");
 
-  var canvas = d3.select(this.chart).select("svg").select('g');
-  if (canvas.empty()) {
+  var canvas = d3.select(this.chart).select("svg");
+  if (canvas.select('g').empty()) {
     canvas = helper.createCanvas(this.chart, width, height, margins, this.tip);
+  } else {
+    canvas
+      .attr("width", width + margins.left + margins.right)
+      .attr("height", height + margins.top + margins.bottom)
+      .select("g")
+        .attr("transform", "translate(" + margins.left + "," + margins.top + ")")
   }
 
   var barSel = canvas.selectAll(".g");
