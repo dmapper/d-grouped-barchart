@@ -97,12 +97,12 @@ BarChart.prototype.create = function() {
   this.draw();
 
   var that = this;
-//  model.on("change", "data**", function() {
-//    this.data = arguments && arguments[1];
-//    that.setKeys();
-//    that.setLegend();
-//    that.draw();
-//  });
+  model.on("change", "data**", function() {
+    this.data = arguments && arguments[1];
+    that.setKeys();
+    that.setLegend();
+    that.draw();
+  });
 
   d3.select("body")
     .on("wheel.barchart", function() {
