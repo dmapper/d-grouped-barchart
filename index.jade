@@ -11,7 +11,8 @@ index(tag='d-grouped-barchart')
         .d-grouped-barchart-topbar-title(class='{{titleClass}}') {{title}}
         .d-grouped-barchart-topbar-menu
           label.d-grouped-barchart-topbar-userBlock(onselectstart='return false' as='dropButton')
-            input(type='checkbox' checked='{{clickSubMenu}}')
+            label Settings
+              input(type='checkbox' checked='{{clickSubMenu}}')
             img.d-grouped-barchart-topbar-arrow(src='/img/icons/down_small.svg')
           view(is='submenu')
       .d-grouped-barchart(as='chart' on-click="model.set('clickSubMenu', false)")
