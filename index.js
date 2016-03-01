@@ -57,10 +57,7 @@ BarChart.prototype.create = function() {
   this.axisHeaders = this.getAttribute("axisHeaders") || ["Groups", "Value"];
   this.margins = this.getAttribute("margins") || {top: 30, right: 40, bottom: 75, left: 40};
   this.groupByKey = this.getAttribute("groupByKey") || "role";
-
-  // ajax tooltip
-  this.pageTooltip = this.getAttribute('pageTooltip');
-  this.chartType = this.getAttribute('chartType');
+  this.tooltipType = this.getAttribute('tooltipType');
   this.issue = this.getAttribute('issue');
   this.csvMode = this.getAttribute('csvMode') || 'regular';
   this.titleText = this.getAttribute('title') || '';
@@ -378,13 +375,13 @@ BarChart.prototype.draw = function() {
     });
   }
 
-  if (this.pageTooltip) {
+  if (this.tooltipType) {
     var self = this;
     bars = bars.on("click", function(d) {
       var t = helper.clone(d);
       t.gameId = self.model.root.get('_page.game.id');
       t.issue = self.issue;
-      self.page.tooltip.show(this, self.chartType, t);
+      self.page.tooltip.show(this, self.tooltipType, t);
     });
   }
 
