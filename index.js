@@ -7,16 +7,7 @@ function BarChart() {}
 BarChart.prototype.view = __dirname;
 BarChart.prototype.style = __dirname;
 
-BarChart.prototype.init = function() {
-
-  var model = this.model;
-  model.setNull("data", []);
-  model.setNull("colors", ['#4f81bd', '#c0504d']);
-  model.setNull("keys", []);
-  model.setNull("axisHeaders", ["Groups", "Value"]);
-  //model.setNull("legendConfig", []);
-  model.setNull("margins", {top: 30, right: 40, bottom: 75, left: 40});
-};
+BarChart.prototype.init = function() {};
 
 BarChart.prototype.empty = function() {
   d3.select(this.chart).select("svg").remove();
@@ -63,20 +54,21 @@ BarChart.prototype.create = function() {
 
   var model = this.model;
 
-  this.axisHeaders = model.get("axisHeaders");
-  this.margins = model.get("margins");
-  this.groupByKey = this.getAttribute("groupByKey") || model.get("groupByKey") || "role";
+  this.axisHeaders = this.getAttribute("axisHeaders") || ["Groups", "Value"];
+  this.margins = this.getAttribute("margins") || {top: 30, right: 40, bottom: 75, left: 40};
+  this.groupByKey = this.getAttribute("groupByKey") || "role";
 
   // ajax tooltip
-  this.pageTooltip = this.getAttribute('pageTooltip') || this.model.get('pageTooltip');
-  this.chartType = this.getAttribute('chartType') || this.model.get('chartType');
-  this.issue = this.getAttribute('issue') || this.model.get('issue');
-  this.csvMode = this.getAttribute('csvMode') || this.model.get('csvMode') || 'regular';
+  this.pageTooltip = this.getAttribute('pageTooltip');
+  this.chartType = this.getAttribute('chartType');
+  this.issue = this.getAttribute('issue');
+  this.csvMode = this.getAttribute('csvMode') || 'regular';
   this.titleText = this.getAttribute('title') || '';
   this.headerText = this.getAttribute('header') || '';
-  this.data = this.getAttribute("data") || model.get("data") || [];
-  this.innerPadding = this.getAttribute("innerPadding") || 0
-  this.outerPadding = this.getAttribute("outerPadding") || 0.5
+  this.data = this.getAttribute("data") || [];
+  this.innerPadding = this.getAttribute("innerPadding") || 0;
+  this.outerPadding = this.getAttribute("outerPadding") || 0.5;
+  this.colors = this.getAttribute("colors") || ['#4f81bd', '#c0504d'];
 
   this.setKeys();
   this.setLegend();
@@ -124,9 +116,8 @@ BarChart.prototype.create = function() {
 };
 
 BarChart.prototype.setKeys = function() {
-  var model = this.model;
   var data = this.data;
-  var keys = Object.keys(data[0]);
+  var keys = this.getAttribute('keys') || data[0] && Object.keys(data[0]) || [];
   var index1 = keys.indexOf('properties');
   var index2 = keys.indexOf(this.groupByKey);
   index1 > -1 && keys.splice(index1, 1);
@@ -135,8 +126,7 @@ BarChart.prototype.setKeys = function() {
 };
 
 BarChart.prototype.setLegend = function() {
-  var model = this.model;
-  var colors = model.get("colors");
+  var colors = this.colors;
   var index, key;
   this.legendConfig = (function() {
     var _i, _len, _ref, _results;
@@ -155,10 +145,9 @@ BarChart.prototype.setLegend = function() {
 };
 
 BarChart.prototype.setScales = function(width, height) {
-  var model = this.model;
   var that = this;
-  var xRange = this.getAttribute("xRange") || this.model.get("xRange") || [0, width];
-  var yStep = model.get("yStep") | 0;
+  var xRange = this.getAttribute("xRange") || [0, width];
+  var yStep = this.getAttribute("yStep") | 0;
   var maxVal, minVal;
   var data = this.data
 
@@ -169,7 +158,7 @@ BarChart.prototype.setScales = function(width, height) {
   this.x1 = d3.scale.ordinal();
   this.y = d3.scale.linear().range([height, 0]);
   // color func
-  this.color = d3.scale.ordinal().range(model.get("colors"));
+  this.color = d3.scale.ordinal().range(this.colors);
   // axis
   this.xAxis = d3.svg.axis().scale(this.x0).orient("bottom");
   this.yAxis = d3.svg.axis().scale(this.y).orient("left").tickFormat(d3.format("d"));
@@ -222,10 +211,10 @@ BarChart.prototype.draw = function() {
   var model = this.model;
   var data = this.data;
   var margins = this.margins || {};
-  var width = parseInt(model.get("width")) || (this.chart).offsetWidth || 800;
+  var width = parseInt(this.getAttribute("width")) || (this.chart).offsetWidth || 800;
   var offsetHeight = this.chart.offsetHeight;
   var maxHeight = 300;
-  var height = parseInt(model.get("height")) ||
+  var height = parseInt(this.getAttribute("height")) ||
     (offsetHeight > 0 && offsetHeight < maxHeight ? offsetHeight : maxHeight);
   this.width = width;
   width = width - margins.left - margins.right;
@@ -236,7 +225,7 @@ BarChart.prototype.draw = function() {
 
   var legend;
   var legendRectSize = 10;
-  var legendItemWidth = model.get('legendItemWidth') || 100;
+  var legendItemWidth = this.getAttribute('legendItemWidth') || 100;
 
   this.setScales(width, height);
 
@@ -478,5 +467,4 @@ BarChart.prototype.draw = function() {
   d3.select(this.chartContainer).select(".js-fullscreen").on('click', toggle);
 
   d3.select(window).on("resize.d-grouped-barchart" + this.id, that.draw.bind(this))
-
 };
