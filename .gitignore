@@ -11,3 +11,6 @@ Gemfile.lock
 
 # Published dist
 /dist/
+
+# WS backup files
+/projectFilesBackup/

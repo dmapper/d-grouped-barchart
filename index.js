@@ -353,7 +353,7 @@ BarChart.prototype.draw = function() {
   }
 
   if (onclickTipContentCb != null) {
-    barSel = barSel.on("click", function (d) {
+    barSel.on("click", function (d) {
       return d3.select(".tip")
         .style("visibility", "visible")
         .style("top", function() {
@@ -377,7 +377,8 @@ BarChart.prototype.draw = function() {
 
   if (this.tooltipType) {
     var self = this;
-    bars = bars.on("click", function(d) {
+    bars.style('cursor', 'pointer');
+    bars.on("click", function(d) {
       var t = helper.clone(d);
       t.gameId = self.model.root.get('_page.game.id');
       t.issue = self.issue;
@@ -393,7 +394,6 @@ BarChart.prototype.draw = function() {
   var horizontalAxis = canvas.select("g._x._axis")
   if (horizontalAxis.empty()) {
     helper.drawHorizontalAxis(canvas, this.xAxis, width, this.xAxisTransform, this.axisHeaders[0], this.xScale);
-    //helper.drawHorizontalAxis(focus, xAxis, width, height, config.axisHeaders[0], "")
   } else {
     horizontalAxis.transition()
       .attr("transform", "translate(0," + this.xAxisTransform + ")")
